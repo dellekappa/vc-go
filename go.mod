@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-module github.com/trustbloc/vc-go
+module github.com/dellekappa/vc-go
 
 go 1.22
 
