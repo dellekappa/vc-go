@@ -13,9 +13,9 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	"github.com/trustbloc/vc-go/sdjwt/common"
-	"github.com/trustbloc/vc-go/sdjwt/holder"
-	"github.com/trustbloc/vc-go/sdjwt/issuer"
+	"github.com/dellekappa/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/holder"
+	"github.com/dellekappa/vc-go/sdjwt/issuer"
 )
 
 type marshalDisclosureOpts struct {

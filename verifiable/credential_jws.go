@@ -8,7 +8,7 @@ package verifiable
 import (
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 // MarshalJWS serializes JWT into signed form (JWS).

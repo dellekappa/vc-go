@@ -11,8 +11,8 @@ import (
 	josejwt "github.com/go-jose/go-jose/v3/jwt"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/cwt"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	"github.com/dellekappa/vc-go/cwt"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 // CWTClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized

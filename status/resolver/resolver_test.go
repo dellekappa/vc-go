@@ -20,9 +20,9 @@ import (
 	model "github.com/trustbloc/did-go/doc/did/endpoint"
 	mockvdr "github.com/trustbloc/did-go/vdr/mock"
 
-	"github.com/trustbloc/vc-go/status/internal/identityhub"
-	. "github.com/trustbloc/vc-go/status/resolver"
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/status/internal/identityhub"
+	. "github.com/dellekappa/vc-go/status/resolver"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 const (

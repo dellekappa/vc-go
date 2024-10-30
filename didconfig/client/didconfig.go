@@ -20,7 +20,7 @@ import (
 	"github.com/trustbloc/did-go/doc/did"
 	vdrapi "github.com/trustbloc/did-go/vdr/api"
 
-	"github.com/trustbloc/vc-go/didconfig/verifier"
+	"github.com/dellekappa/vc-go/didconfig/verifier"
 )
 
 var errLogger = log.New(os.Stderr, " [did-go/did-config/client] ", log.Ldate|log.Ltime|log.LUTC)

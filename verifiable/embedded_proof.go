@@ -12,8 +12,8 @@ import (
 
 	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
 
-	"github.com/trustbloc/vc-go/dataintegrity/models"
-	"github.com/trustbloc/vc-go/verifiable/lddocument"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/verifiable/lddocument"
 )
 
 type embeddedProofCheckOpts struct {

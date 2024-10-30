@@ -15,7 +15,7 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/proof"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )
 
 // G2SignatureVerifier is a signature verifier that verifies a BBS+ Signature

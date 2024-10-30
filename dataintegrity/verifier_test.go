@@ -15,7 +15,7 @@ import (
 	"github.com/tidwall/sjson"
 	"github.com/trustbloc/did-go/doc/did"
 
-	"github.com/trustbloc/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
 )
 
 const (

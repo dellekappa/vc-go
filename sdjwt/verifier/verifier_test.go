@@ -25,12 +25,12 @@ import (
 	afjose "github.com/trustbloc/kms-go/doc/jose"
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	afjwt "github.com/trustbloc/vc-go/jwt"
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/sdjwt/common"
-	"github.com/trustbloc/vc-go/sdjwt/holder"
-	"github.com/trustbloc/vc-go/sdjwt/issuer"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	afjwt "github.com/dellekappa/vc-go/jwt"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/holder"
+	"github.com/dellekappa/vc-go/sdjwt/issuer"
 )
 
 const (

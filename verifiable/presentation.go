@@ -16,8 +16,8 @@ import (
 	docjsonld "github.com/trustbloc/did-go/doc/ld/validator"
 	"github.com/xeipuuv/gojsonschema"
 
-	"github.com/trustbloc/vc-go/dataintegrity"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	"github.com/dellekappa/vc-go/dataintegrity"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 const (

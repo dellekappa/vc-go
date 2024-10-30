@@ -16,7 +16,7 @@ import (
 	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
 	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
 
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 type mockLoader struct {

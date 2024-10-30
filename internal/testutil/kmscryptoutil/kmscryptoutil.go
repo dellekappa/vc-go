@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/dellekappa/vc-go/legacy/mock/storage"
 	"github.com/stretchr/testify/require"
 	"github.com/trustbloc/kms-go/doc/jose/jwk"
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
@@ -14,7 +15,6 @@ import (
 	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 	wrapperapi "github.com/trustbloc/kms-go/wrapper/api"
 	"github.com/trustbloc/kms-go/wrapper/localsuite"
-	"github.com/trustbloc/vc-go/legacy/mock/storage"
 )
 
 // LocalKMSCrypto creates a kmscrypto.KMSCrypto instance that uses localkms and tinkcrypto.

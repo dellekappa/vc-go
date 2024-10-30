@@ -13,9 +13,9 @@ import (
 
 	spi "github.com/trustbloc/kms-go/spi/storage"
 
-	storagetest "github.com/trustbloc/vc-go/legacy/test/component/storage"
+	storagetest "github.com/dellekappa/vc-go/legacy/test/component/storage"
 
-	"github.com/trustbloc/vc-go/legacy/mem"
+	"github.com/dellekappa/vc-go/legacy/mem"
 )
 
 func TestCommon(t *testing.T) {

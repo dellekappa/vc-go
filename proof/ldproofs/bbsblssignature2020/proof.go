@@ -18,7 +18,7 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/processor"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/proof"
+	"github.com/dellekappa/vc-go/proof"
 )
 
 // Proof implements BbsBlsSignature2020 signature suite.

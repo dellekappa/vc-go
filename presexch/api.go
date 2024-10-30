@@ -17,8 +17,8 @@ import (
 	"github.com/PaesslerAG/jsonpath"
 	"github.com/piprate/json-gold/ld"
 
-	"github.com/trustbloc/vc-go/jwt"
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/jwt"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 const (

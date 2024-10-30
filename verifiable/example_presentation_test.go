@@ -14,8 +14,8 @@ import (
 	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/verifiable"
 
 	utiltime "github.com/trustbloc/did-go/doc/util/time"
 )

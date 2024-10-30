@@ -13,8 +13,8 @@ import (
 	ldprocessor "github.com/trustbloc/did-go/doc/ld/processor"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/verifiable/lddocument"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/verifiable/lddocument"
 )
 
 // This example is generated using https://transmute-industries.github.io/vc-greeting-card

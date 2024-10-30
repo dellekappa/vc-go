@@ -15,7 +15,7 @@ import (
 
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )
 
 // PS256Verifier verifies a rsa signature taking RSA public key bytes as input.

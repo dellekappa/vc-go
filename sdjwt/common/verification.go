@@ -21,8 +21,8 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	afgjwt "github.com/trustbloc/vc-go/jwt"
-	utils "github.com/trustbloc/vc-go/util/maphelpers"
+	afgjwt "github.com/dellekappa/vc-go/jwt"
+	utils "github.com/dellekappa/vc-go/util/maphelpers"
 )
 
 // VerifySigningAlg ensures that a signing algorithm was used that was deemed secure for the application.

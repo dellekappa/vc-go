@@ -21,12 +21,12 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/sdjwt/common"
-	"github.com/trustbloc/vc-go/sdjwt/holder"
-	"github.com/trustbloc/vc-go/sdjwt/issuer"
-	"github.com/trustbloc/vc-go/sdjwt/verifier"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/holder"
+	"github.com/dellekappa/vc-go/sdjwt/issuer"
+	"github.com/dellekappa/vc-go/sdjwt/verifier"
 )
 
 const (

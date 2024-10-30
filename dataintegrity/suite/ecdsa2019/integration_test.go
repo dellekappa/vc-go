@@ -15,9 +15,9 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/documentloader"
 	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/internal/testutil/kmscryptoutil"
+	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
 
-	"github.com/trustbloc/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
 )
 
 func TestIntegration(t *testing.T) {

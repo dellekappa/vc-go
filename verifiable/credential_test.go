@@ -18,19 +18,19 @@ import (
 	"testing"
 	"time"
 
+	afgjwt "github.com/dellekappa/vc-go/jwt"
 	"github.com/piprate/json-gold/ld"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
 	afgotime "github.com/trustbloc/did-go/doc/util/time"
 	"github.com/trustbloc/kms-go/spi/kms"
-	afgjwt "github.com/trustbloc/vc-go/jwt"
 	"github.com/veraison/go-cose"
 	"github.com/xeipuuv/gojsonschema"
 	"golang.org/x/exp/slices"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 const singleCredentialSubject = `

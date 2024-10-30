@@ -18,7 +18,7 @@ import (
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )
 
 func TestTransformFromBlankNodes(t *testing.T) {

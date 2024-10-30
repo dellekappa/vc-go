@@ -12,8 +12,8 @@ import (
 	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/proof"
-	"github.com/trustbloc/vc-go/verifiable/cwt"
+	"github.com/dellekappa/vc-go/proof"
+	"github.com/dellekappa/vc-go/verifiable/cwt"
 )
 
 const (

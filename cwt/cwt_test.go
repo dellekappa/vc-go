@@ -21,10 +21,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/cwt"
-	"github.com/trustbloc/vc-go/proof"
-	"github.com/trustbloc/vc-go/proof/checker"
-	cwt2 "github.com/trustbloc/vc-go/verifiable/cwt"
+	"github.com/dellekappa/vc-go/cwt"
+	"github.com/dellekappa/vc-go/proof"
+	"github.com/dellekappa/vc-go/proof/checker"
+	cwt2 "github.com/dellekappa/vc-go/verifiable/cwt"
 )
 
 const (

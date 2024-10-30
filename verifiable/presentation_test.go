@@ -18,7 +18,7 @@ import (
 	"github.com/trustbloc/kms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/proof/testsupport"
 )
 
 const validPresentation = `

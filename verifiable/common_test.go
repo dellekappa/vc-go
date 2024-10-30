@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 func TestJwtAlgorithm_Name(t *testing.T) {

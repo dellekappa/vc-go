@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 const (

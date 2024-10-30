@@ -13,8 +13,8 @@ import (
 	ldprocessor "github.com/trustbloc/did-go/doc/ld/processor"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 func TestParsePresentationFromLinkedDataProof(t *testing.T) {

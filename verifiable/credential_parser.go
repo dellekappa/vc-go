@@ -16,7 +16,7 @@ import (
 	"github.com/trustbloc/kms-go/doc/jose"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/common"
 )
 
 // CredentialParser is a parser for credentials.

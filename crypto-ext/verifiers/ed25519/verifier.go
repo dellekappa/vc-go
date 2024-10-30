@@ -13,7 +13,7 @@ import (
 
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )
 
 // Verifier verifies a Ed25519 signature taking Ed25519 public key bytes as input.

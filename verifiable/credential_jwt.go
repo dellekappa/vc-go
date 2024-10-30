@@ -16,8 +16,8 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	"github.com/trustbloc/vc-go/jwt"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	"github.com/dellekappa/vc-go/jwt"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 const (

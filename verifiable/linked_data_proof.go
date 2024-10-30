@@ -13,7 +13,7 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/proof"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/verifiable/lddocument"
+	"github.com/dellekappa/vc-go/verifiable/lddocument"
 )
 
 // SignatureRepresentation is a signature value holder type (e.g. "proofValue" or "jws").

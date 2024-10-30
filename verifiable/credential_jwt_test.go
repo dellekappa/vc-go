@@ -13,7 +13,7 @@ import (
 	josejwt "github.com/go-jose/go-jose/v3/jwt"
 	"github.com/stretchr/testify/require"
 
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 const (

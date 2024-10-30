@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 // JWTPresClaims is JWT Claims extension by Verifiable Presentation (with custom "vp" claim).

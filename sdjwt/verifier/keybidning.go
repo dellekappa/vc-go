@@ -16,8 +16,8 @@ import (
 	"github.com/go-jose/go-jose/v3/jwt"
 	"github.com/mitchellh/mapstructure"
 
-	afgjwt "github.com/trustbloc/vc-go/jwt"
-	utils "github.com/trustbloc/vc-go/util/maphelpers"
+	afgjwt "github.com/dellekappa/vc-go/jwt"
+	utils "github.com/dellekappa/vc-go/util/maphelpers"
 )
 
 // verifyKeyBindingJWT verifies key binding JWT.

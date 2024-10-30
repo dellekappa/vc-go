@@ -16,8 +16,8 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	afgjwt "github.com/trustbloc/vc-go/jwt"
-	"github.com/trustbloc/vc-go/sdjwt/common"
+	afgjwt "github.com/dellekappa/vc-go/jwt"
+	"github.com/dellekappa/vc-go/sdjwt/common"
 )
 
 // Claim defines claim.

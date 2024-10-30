@@ -13,8 +13,8 @@ import (
 	"github.com/trustbloc/did-go/doc/did"
 	vdrapi "github.com/trustbloc/did-go/vdr/api"
 
-	"github.com/trustbloc/vc-go/dataintegrity/models"
-	"github.com/trustbloc/vc-go/dataintegrity/suite"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/dataintegrity/suite"
 )
 
 var errExpected = errors.New("expected error")

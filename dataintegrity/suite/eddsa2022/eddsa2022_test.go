@@ -23,9 +23,9 @@ import (
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
 	mockwrapper "github.com/trustbloc/kms-go/mock/wrapper"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
-	"github.com/trustbloc/vc-go/dataintegrity/models"
-	"github.com/trustbloc/vc-go/dataintegrity/suite"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/dataintegrity/suite"
 )
 
 const (

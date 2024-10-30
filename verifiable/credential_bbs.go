@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 // GenerateBBSSelectiveDisclosure generate BBS+ selective disclosure from one BBS+ signature.

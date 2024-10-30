@@ -10,7 +10,7 @@ import (
 	"github.com/trustbloc/kms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/proof"
+	"github.com/dellekappa/vc-go/proof"
 )
 
 // Proof describes es521 proof type.

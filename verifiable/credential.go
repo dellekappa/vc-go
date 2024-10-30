@@ -31,13 +31,13 @@ import (
 
 	util "github.com/trustbloc/did-go/doc/util/time"
 
-	"github.com/trustbloc/vc-go/cwt"
-	"github.com/trustbloc/vc-go/dataintegrity"
-	"github.com/trustbloc/vc-go/jwt"
-	"github.com/trustbloc/vc-go/sdjwt/common"
-	jsonutil "github.com/trustbloc/vc-go/util/json"
-	cwt2 "github.com/trustbloc/vc-go/verifiable/cwt"
-	"github.com/trustbloc/vc-go/verifiable/lddocument"
+	"github.com/dellekappa/vc-go/cwt"
+	"github.com/dellekappa/vc-go/dataintegrity"
+	"github.com/dellekappa/vc-go/jwt"
+	"github.com/dellekappa/vc-go/sdjwt/common"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
+	cwt2 "github.com/dellekappa/vc-go/verifiable/cwt"
+	"github.com/dellekappa/vc-go/verifiable/lddocument"
 )
 
 var errLogger = log.New(os.Stderr, " [vc-go/verifiable] ", log.Ldate|log.Ltime|log.LUTC)

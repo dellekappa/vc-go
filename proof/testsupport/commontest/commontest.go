@@ -22,14 +22,14 @@ import (
 	"github.com/trustbloc/kms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	"github.com/trustbloc/vc-go/cwt"
-	"github.com/trustbloc/vc-go/proof"
-	"github.com/trustbloc/vc-go/proof/creator"
-	"github.com/trustbloc/vc-go/proof/jwtproofs/eddsa"
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/verifiable"
-	cwt2 "github.com/trustbloc/vc-go/verifiable/cwt"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	"github.com/dellekappa/vc-go/cwt"
+	"github.com/dellekappa/vc-go/proof"
+	"github.com/dellekappa/vc-go/proof/creator"
+	"github.com/dellekappa/vc-go/proof/jwtproofs/eddsa"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/verifiable"
+	cwt2 "github.com/dellekappa/vc-go/verifiable/cwt"
 )
 
 const testCredential = `

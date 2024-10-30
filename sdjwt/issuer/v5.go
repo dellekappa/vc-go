@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/trustbloc/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/common"
 )
 
 // SDJWTBuilderV5 represents builder struct for SD-JWT v5 spec.

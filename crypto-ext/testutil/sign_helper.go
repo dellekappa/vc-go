@@ -18,8 +18,8 @@ import (
 	"github.com/trustbloc/kms-go/spi/kms"
 	wrapperapi "github.com/trustbloc/kms-go/wrapper/api"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
-	"github.com/trustbloc/vc-go/internal/testutil/kmscryptoutil"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
 )
 
 // CreateRSARS256 created signer and corresponding public key.

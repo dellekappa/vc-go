@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/trustbloc/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/common"
 )
 
 type builder interface {

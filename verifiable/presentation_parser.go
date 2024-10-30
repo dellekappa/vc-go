@@ -16,7 +16,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 type parsePresentationResponse struct {

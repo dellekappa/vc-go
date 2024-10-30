@@ -34,8 +34,8 @@ import (
 	ldstore "github.com/trustbloc/did-go/doc/ld/store"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/legacy/mem"
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/legacy/mem"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 var errLogger = log.New(os.Stderr, " [vc-go/verifiable/test-suite] ", log.Ldate|log.Ltime|log.LUTC)

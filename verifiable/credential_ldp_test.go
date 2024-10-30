@@ -16,12 +16,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	"github.com/trustbloc/vc-go/internal/testutil/kmscryptoutil"
-	"github.com/trustbloc/vc-go/proof/creator"
-	"github.com/trustbloc/vc-go/proof/defaults"
-	"github.com/trustbloc/vc-go/proof/ldproofs/bbsblssignature2020"
-	"github.com/trustbloc/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
+	"github.com/dellekappa/vc-go/proof/creator"
+	"github.com/dellekappa/vc-go/proof/defaults"
+	"github.com/dellekappa/vc-go/proof/ldproofs/bbsblssignature2020"
+	"github.com/dellekappa/vc-go/proof/testsupport"
 
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
 	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
@@ -29,7 +29,7 @@ import (
 	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	jsonutil "github.com/trustbloc/vc-go/util/json"
+	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
 func TestParseCredentialFromLinkedDataProof_Ed25519Signature2018(t *testing.T) {

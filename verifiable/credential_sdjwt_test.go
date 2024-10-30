@@ -18,16 +18,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	afgjwt "github.com/trustbloc/vc-go/jwt"
-	"github.com/trustbloc/vc-go/proof/checker"
-	"github.com/trustbloc/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	afgjwt "github.com/dellekappa/vc-go/jwt"
+	"github.com/dellekappa/vc-go/proof/checker"
+	"github.com/dellekappa/vc-go/proof/testsupport"
 
 	"github.com/trustbloc/kms-go/doc/jose"
 	"github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/sdjwt/common"
-	"github.com/trustbloc/vc-go/sdjwt/holder"
+	"github.com/dellekappa/vc-go/sdjwt/common"
+	"github.com/dellekappa/vc-go/sdjwt/holder"
 )
 
 const (

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/proof/testsupport"
 )
 
 const ()

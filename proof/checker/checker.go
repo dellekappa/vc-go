@@ -19,9 +19,9 @@ import (
 	"github.com/trustbloc/kms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
-	proofdesc "github.com/trustbloc/vc-go/proof"
-	"github.com/trustbloc/vc-go/vermethod"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
+	proofdesc "github.com/dellekappa/vc-go/proof"
+	"github.com/dellekappa/vc-go/vermethod"
 )
 
 type verificationMethodResolver interface {

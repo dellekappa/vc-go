@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0
 package api
 
 import (
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 // Validator holds handlers for validating a particular format of Status(Revocation) List VC.

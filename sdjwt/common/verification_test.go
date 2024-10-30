@@ -19,8 +19,8 @@ import (
 
 	afjose "github.com/trustbloc/kms-go/doc/jose"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	afjwt "github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	afjwt "github.com/dellekappa/vc-go/jwt"
 )
 
 func TestVerifySigningAlgorithm(t *testing.T) {

@@ -11,8 +11,8 @@ import (
 	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/cwt"
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/cwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 func newCWTPresClaims(vp *Presentation, audience []string, minimizeVP bool) (*CWTPresClaims, error) {

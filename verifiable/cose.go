@@ -9,8 +9,8 @@ import (
 	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/cwt"
-	cwt2 "github.com/trustbloc/vc-go/verifiable/cwt"
+	"github.com/dellekappa/vc-go/cwt"
+	cwt2 "github.com/dellekappa/vc-go/verifiable/cwt"
 )
 
 const (

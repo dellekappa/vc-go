@@ -14,9 +14,9 @@ import (
 	"github.com/trustbloc/kms-go/doc/jose/jwk"
 	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/crypto-ext/pubkey"
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	"github.com/trustbloc/vc-go/crypto-ext/verifiers/rsa"
+	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	"github.com/dellekappa/vc-go/crypto-ext/verifiers/rsa"
 )
 
 func TestNewRSARS256SignatureVerifier(t *testing.T) {

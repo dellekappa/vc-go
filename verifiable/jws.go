@@ -10,7 +10,7 @@ import (
 
 	"github.com/trustbloc/kms-go/doc/jose"
 
-	"github.com/trustbloc/vc-go/jwt"
+	"github.com/dellekappa/vc-go/jwt"
 )
 
 // MarshalJWS serializes JWT presentation claims into signed form (JWS).

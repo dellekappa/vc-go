@@ -10,10 +10,10 @@ package status
 import (
 	"fmt"
 
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/verifiable"
 
-	"github.com/trustbloc/vc-go/status/api"
-	"github.com/trustbloc/vc-go/status/internal/bitstring"
+	"github.com/dellekappa/vc-go/status/api"
+	"github.com/dellekappa/vc-go/status/internal/bitstring"
 )
 
 const (

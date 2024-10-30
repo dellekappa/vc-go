@@ -9,7 +9,7 @@ package creator_test
 import (
 	"testing"
 
-	"github.com/trustbloc/vc-go/proof/testsupport/commontest"
+	"github.com/dellekappa/vc-go/proof/testsupport/commontest"
 )
 
 func TestProofCreator_Common(t *testing.T) {

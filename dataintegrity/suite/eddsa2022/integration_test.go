@@ -12,8 +12,8 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/store"
 	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
-	"github.com/trustbloc/vc-go/dataintegrity/models"
-	"github.com/trustbloc/vc-go/internal/testutil/kmscryptoutil"
+	"github.com/dellekappa/vc-go/dataintegrity/models"
+	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
 )
 
 var (

@@ -22,12 +22,12 @@ import (
 
 	utiltime "github.com/trustbloc/did-go/doc/util/time"
 
-	"github.com/trustbloc/vc-go/crypto-ext/testutil"
-	"github.com/trustbloc/vc-go/presexch"
-	"github.com/trustbloc/vc-go/proof/creator"
-	"github.com/trustbloc/vc-go/proof/ldproofs/bbsblssignature2020"
-	"github.com/trustbloc/vc-go/proof/testsupport"
-	"github.com/trustbloc/vc-go/verifiable"
+	"github.com/dellekappa/vc-go/crypto-ext/testutil"
+	"github.com/dellekappa/vc-go/presexch"
+	"github.com/dellekappa/vc-go/proof/creator"
+	"github.com/dellekappa/vc-go/proof/ldproofs/bbsblssignature2020"
+	"github.com/dellekappa/vc-go/proof/testsupport"
+	"github.com/dellekappa/vc-go/verifiable"
 )
 
 var (

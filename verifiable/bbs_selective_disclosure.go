@@ -15,8 +15,8 @@ import (
 	"github.com/trustbloc/did-go/doc/ld/processor"
 	"github.com/trustbloc/did-go/doc/ld/proof"
 
-	"github.com/trustbloc/vc-go/proof/ldproofs/bbsblssignatureproof2020"
-	"github.com/trustbloc/vc-go/vermethod"
+	"github.com/dellekappa/vc-go/proof/ldproofs/bbsblssignatureproof2020"
+	"github.com/dellekappa/vc-go/vermethod"
 )
 
 const (

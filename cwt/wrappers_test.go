@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/veraison/go-cose"
 
-	"github.com/trustbloc/vc-go/cwt"
-	"github.com/trustbloc/vc-go/proof/checker"
+	"github.com/dellekappa/vc-go/cwt"
+	"github.com/dellekappa/vc-go/proof/checker"
 )
 
 func TestWrapper(t *testing.T) {
