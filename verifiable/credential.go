@@ -8,6 +8,7 @@ package verifiable
 import (
 	"bytes"
 	"crypto"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
@@ -857,6 +858,7 @@ type CredentialContents struct {
 	TermsOfUse     []TypedID
 	RefreshService *TypedID
 	SDJWTHashAlg   *crypto.Hash
+	HolderKey      crypto.PublicKey
 }
 
 // JSONObject used to store json object.
@@ -866,12 +868,14 @@ type JSONObject = map[string]interface{}
 type Credential struct {
 	// credentialJSON contains vc as json object. For json-ld vc this will be original json object.
 	// For jwt vc it will be jwt claims json object.
+	// For mdoc vc it will be mdoc namespaced claims json object
 	credentialJSON     JSONObject
 	credentialContents CredentialContents
 	ldProofs           []Proof
 	//TODO: make this private. Currently used in tests to create invalid jwt vc's.
-	JWTEnvelope *JWTEnvelope
-	CWTEnvelope *CWTEnvelope
+	JWTEnvelope  *JWTEnvelope
+	CWTEnvelope  *CWTEnvelope
+	MDocEnvelope *MDocEnvelope
 }
 
 // JWTEnvelope contains information about JWT that envelops credential.
@@ -882,12 +886,6 @@ type JWTEnvelope struct {
 	SDJWTVersion     common.SDJWTVersion
 	SDJWTDisclosures []*common.DisclosureClaim
 	SDHolderBinding  string
-}
-
-// CWTEnvelope contains information about CWT that envelops credential.
-type CWTEnvelope struct {
-	Sign1MessageRaw    []byte
-	Sign1MessageParsed *cose.Sign1Message
 }
 
 // Envelope contains an object in the ID field which is encoded as a data URL in the
@@ -922,6 +920,7 @@ func (vc *Credential) Contents() CredentialContents {
 
 // ToRawJSON return vc as json object. For json-ld vc this will be original json object.
 // For jwt vc it will be jwt claims json object.
+// For mdoc vc it will be mdoc namespaced claims json object.
 func (vc *Credential) ToRawJSON() JSONObject {
 	// TODO: consider deep copy
 	raw := jsonutil.ShallowCopyObj(vc.credentialJSON)
@@ -956,6 +955,13 @@ func (vc *Credential) ToJWTString() (string, error) {
 // ToUniversalForm returns vc in its natural form. For jwt-vc it is a jwt string. For json-ld vc it is a json object.
 func (vc *Credential) ToUniversalForm() (interface{}, error) {
 	switch {
+	case vc.IsMDoc():
+		return vc.toEnvelopedForm(
+			VCMediaTypeCOSE,
+			func(vc *Credential) (string, error) {
+				return base64.URLEncoding.EncodeToString(vc.MDocEnvelope.MDocMessageRaw), nil
+			},
+		)
 	case vc.IsCWT():
 		return vc.toEnvelopedForm(
 			VCMediaTypeCOSE,
@@ -1017,6 +1023,11 @@ func (vc *Credential) IsJWT() bool {
 // IsCWT returns is vc envelop into cwt.
 func (vc *Credential) IsCWT() bool {
 	return vc.CWTEnvelope != nil
+}
+
+// IsMDoc returns is vc envelop into mdoc.
+func (vc *Credential) IsMDoc() bool {
+	return vc.MDocEnvelope != nil
 }
 
 // JWTHeaders returns jwt headers for jwt-vc.
@@ -2303,7 +2314,7 @@ func (vc *Credential) CreateSignedCOSEVC(
 		return nil, err
 	}
 
-	msgRaw, msg, err := claims.MarshaCOSE(signatureAlg, proofCreator, keyID)
+	msgRaw, msg, err := claims.MarshalCOSE(signatureAlg, proofCreator, keyID)
 	if err != nil {
 		return nil, err
 	}
@@ -2315,6 +2326,42 @@ func (vc *Credential) CreateSignedCOSEVC(
 		CWTEnvelope: &CWTEnvelope{
 			Sign1MessageRaw:    msgRaw,
 			Sign1MessageParsed: msg,
+		},
+	}, nil
+}
+
+// CreateSignedMDocVC envelops current vc into signed MDoc.
+func (vc *Credential) CreateSignedMDocVC(
+	signatureAlg cose.Algorithm,
+	proofCreator cwt.ProofCreator,
+	keyID string,
+	options ...MakeMDocOption,
+) (*Credential, error) {
+	opts := &MakeMDocOpts{
+		hashAlg: crypto.SHA256,
+	}
+
+	for _, option := range options {
+		option(opts)
+	}
+
+	claims, err := vc.MDocClaims(opts.hashAlg)
+	if err != nil {
+		return nil, err
+	}
+
+	msgRaw, msg, err := claims.MarshalMDoc(signatureAlg, proofCreator, keyID, opts.certs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Credential{
+		credentialJSON:     claims.VC,
+		credentialContents: vc.Contents(),
+		ldProofs:           vc.ldProofs,
+		MDocEnvelope: &MDocEnvelope{
+			MDocMessageRaw:    msgRaw,
+			MDocMessageParsed: msg,
 		},
 	}, nil
 }

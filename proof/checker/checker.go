@@ -9,6 +9,7 @@ package checker
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/dellekappa/vc-go/jwt"
 
 	"github.com/tidwall/gjson"
 	"github.com/trustbloc/did-go/doc/ld/processor"
@@ -38,6 +39,29 @@ type signatureVerifier interface {
 type signatureVerifierEx interface {
 	// Verify verifies the signature.
 	Verify(sig, msg []byte, pub *pubkey.PublicKey, proof *proof.Proof) error
+}
+
+type VerifyFunc func(signature, msg []byte, pubKey *pubkey.PublicKey) error
+
+// Verifier verifies elliptic curve signatures.
+type signatureVerifierWrapper struct {
+	wrapped           signatureVerifier
+	wrappedVerifyFunc VerifyFunc
+}
+
+func newSignatureVerifierWrapper(wrapped signatureVerifier, wrapperFunc func(verify VerifyFunc) VerifyFunc) signatureVerifier {
+	return &signatureVerifierWrapper{
+		wrapped:           wrapped,
+		wrappedVerifyFunc: wrapperFunc(wrapped.Verify),
+	}
+}
+
+// SupportedKeyType checks if verifier supports given key.
+func (sv *signatureVerifierWrapper) SupportedKeyType(keyType kms.KeyType) bool {
+	return sv.wrapped.SupportedKeyType(keyType)
+}
+func (sv *signatureVerifierWrapper) Verify(signature, msg []byte, pubKey *pubkey.PublicKey) error {
+	return sv.wrappedVerifyFunc(signature, msg, pubKey)
 }
 
 type ldCheckDescriptor struct {
@@ -215,9 +239,13 @@ func (c *ProofChecker) CheckJWTProof(headers jose.Headers, expectedProofIssuer s
 		return fmt.Errorf("missed alg in jwt header")
 	}
 
+	supportedProof, err := c.getSupportedProofByAlg(alg)
+	if err != nil {
+		return err
+	}
+
 	var vm *vermethod.VerificationMethod
 	if kidOk {
-		var err error
 		vm, err = c.verificationMethodResolver.ResolveVerificationMethod(keyID, expectedProofIssuer)
 		if err != nil {
 			return fmt.Errorf("invalid public key id: %w", err)
@@ -232,11 +260,6 @@ func (c *ProofChecker) CheckJWTProof(headers jose.Headers, expectedProofIssuer s
 			Value: keyBytes,
 			JWK:   key,
 		}
-	}
-
-	supportedProof, err := c.getSupportedProofByAlg(alg)
-	if err != nil {
-		return err
 	}
 
 	pubKey, err := convertToPublicKey(supportedProof.proofDescriptor.SupportedVerificationMethods(), vm)
@@ -384,6 +407,22 @@ func (c *ProofChecker) FindIssuer(payload []byte) string {
 	return ""
 }
 
+func (c *ProofChecker) WithSignatureVerificationWrapping(wrapper func(VerifyFunc) VerifyFunc) jwt.ProofChecker {
+	base := &c.ProofCheckerBase
+	return &ProofChecker{
+		ProofCheckerBase:           *base.WithSignatureVerificationWrapping(wrapper),
+		verificationMethodResolver: c.verificationMethodResolver,
+	}
+}
+
+func wrapSignatureVerifiers(verifiers []signatureVerifier, wrapper func(verify VerifyFunc) VerifyFunc) []signatureVerifier {
+	result := make([]signatureVerifier, len(verifiers))
+	for i := range verifiers {
+		result[i] = newSignatureVerifierWrapper(verifiers[i], wrapper)
+	}
+	return result
+}
+
 func convertToPublicKey(
 	supportedMethods []proofdesc.SupportedVerificationMethod,
 	vm *vermethod.VerificationMethod,
@@ -464,6 +503,15 @@ func (c *ProofCheckerBase) getSignatureVerifier(keyType kms.KeyType) (signatureV
 	return nil, fmt.Errorf("no vefiers with supported key type %s", keyType)
 }
 
+func (c *ProofCheckerBase) WithSignatureVerificationWrapping(wrapper func(verify VerifyFunc) VerifyFunc) *ProofCheckerBase {
+	return &ProofCheckerBase{
+		supportedLDProofs:  c.supportedLDProofs,
+		supportedJWTProofs: c.supportedJWTProofs,
+		supportedCWTProofs: c.supportedCWTProofs,
+		signatureVerifiers: wrapSignatureVerifiers(c.signatureVerifiers, wrapper),
+	}
+}
+
 // EmbeddedVMProofChecker is a proof  checker with embedded verification method.
 type EmbeddedVMProofChecker struct {
 	ProofCheckerBase
@@ -493,6 +541,14 @@ func (c *EmbeddedVMProofChecker) CheckJWTProof(headers jose.Headers, _ string, m
 	}
 
 	return verifier.Verify(signature, msg, pubKey)
+}
+
+func (c *EmbeddedVMProofChecker) WithSignatureVerificationWrapping(wrapper func(VerifyFunc) VerifyFunc) *EmbeddedVMProofChecker {
+	base := &c.ProofCheckerBase
+	return &EmbeddedVMProofChecker{
+		ProofCheckerBase: *base.WithSignatureVerificationWrapping(wrapper),
+		vm:               c.vm,
+	}
 }
 
 // NewEmbeddedJWKProofChecker return new EmbeddedVMProofChecker with embedded jwk.

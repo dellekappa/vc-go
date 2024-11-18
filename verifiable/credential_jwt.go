@@ -36,24 +36,6 @@ type JWTCredClaims struct {
 	VC map[string]interface{} `json:"vc,omitempty"`
 }
 
-// CWTClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized.
-type CWTClaims struct {
-	Issuer    string               `json:"iss,omitempty"`
-	Subject   string               `json:"sub,omitempty"`
-	Audience  string               `json:"aud,omitempty"`
-	Expiry    *josejwt.NumericDate `json:"exp,omitempty"`
-	NotBefore *josejwt.NumericDate `json:"nbf,omitempty"`
-	IssuedAt  *josejwt.NumericDate `json:"iat,omitempty"`
-	Cti       []byte               `json:"cti,omitempty"`
-	ID        string               `json:"-"`
-}
-
-// CWTCredClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized.
-type CWTCredClaims struct {
-	*CWTClaims
-	VC map[string]interface{} `json:"vc,omitempty"`
-}
-
 // ToSDJWTV5CredentialPayload defines custom marshalling of JWTCredClaims.
 // Key difference with default marshaller is that returned object does not contain custom "vc" root claim.
 // Example:

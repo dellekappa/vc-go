@@ -15,6 +15,30 @@ import (
 	jsonutil "github.com/dellekappa/vc-go/util/json"
 )
 
+// CWTEnvelope contains information about CWT that envelops credential.
+type CWTEnvelope struct {
+	Sign1MessageRaw    []byte
+	Sign1MessageParsed *cose.Sign1Message
+}
+
+// CWTClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized.
+type CWTClaims struct {
+	Issuer    string               `json:"iss,omitempty"`
+	Subject   string               `json:"sub,omitempty"`
+	Audience  string               `json:"aud,omitempty"`
+	Expiry    *josejwt.NumericDate `json:"exp,omitempty"`
+	NotBefore *josejwt.NumericDate `json:"nbf,omitempty"`
+	IssuedAt  *josejwt.NumericDate `json:"iat,omitempty"`
+	Cti       []byte               `json:"cti,omitempty"`
+	ID        string               `json:"-"`
+}
+
+// CWTCredClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized.
+type CWTCredClaims struct {
+	*CWTClaims
+	VC map[string]interface{} `json:"vc,omitempty"`
+}
+
 // CWTClaims converts Verifiable Credential into CWT Credential claims, which can be than serialized
 // e.g. into JWS.
 func (vc *Credential) CWTClaims() (*CWTCredClaims, error) {
@@ -57,8 +81,8 @@ func newCWTCredClaims(vc *Credential) (*CWTCredClaims, error) {
 	return credClaims, nil
 }
 
-// MarshaCOSE serializes into signed form (COSE).
-func (jcc *CWTCredClaims) MarshaCOSE(
+// MarshalCOSE serializes into signed form (COSE).
+func (jcc *CWTCredClaims) MarshalCOSE(
 	signatureAlg cose.Algorithm,
 	signer cwt.ProofCreator,
 	keyID string,

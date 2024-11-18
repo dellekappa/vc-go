@@ -1,5 +1,5 @@
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/trustbloc/vc-go/main/LICENSE)
-[![Release](https://img.shields.io/github/release/trustbloc/vc-go.svg?style=flat-square)](https://github.com/dellekappa/vc-go/releases/latest)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://raw.githubusercontent.com/dellekappa/vc-go/main/LICENSE)
+[![Release](https://img.shields.io/github/release/dellekappa/vc-go.svg?style=flat-square)](https://github.com/dellekappa/vc-go/releases/latest)
 [![Godocs](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/dellekappa/vc-go)
 
 [![Build Status](https://github.com/dellekappa/vc-go/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/dellekappa/vc-go/actions/workflows/build.yml)
