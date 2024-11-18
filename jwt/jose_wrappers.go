@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package jwt
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 
@@ -57,11 +58,20 @@ func (v *joseVerifier) Verify(joseHeaders jose.Headers, _, signingInput, signatu
 	} else {
 		// if expectedProofIssuer not set, we get issuer DID from first part of key id.
 		keyID, ok := joseHeaders.KeyID()
-		if !ok {
-			return fmt.Errorf("missed kid in jwt header")
+		if ok {
+			expectedProofIssuer = strings.Split(keyID, "#")[0]
+		} else {
+			key, jwkOk := joseHeaders.JWK()
+			if !jwkOk {
+				return fmt.Errorf("missed kid or jwk in jwt header")
+			}
+			jwkJson, err := key.MarshalJSON()
+			if err != nil {
+				return fmt.Errorf("cannot marshar jwk in jwt header: %w", err)
+			}
+			expectedProofIssuer = fmt.Sprintf("did:jwk:%s", base64.URLEncoding.EncodeToString(jwkJson))
 		}
 
-		expectedProofIssuer = strings.Split(keyID, "#")[0]
 	}
 
 	return v.proofChecker.CheckJWTProof(joseHeaders, expectedProofIssuer, signingInput, signature)
