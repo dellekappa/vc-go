@@ -200,9 +200,14 @@ func (c *ProofCheckerBase) GetLDPDigest(proof *proof.Proof, doc []byte) ([]byte,
 
 // CheckJWTProof check jwt proof.
 func (c *ProofChecker) CheckJWTProof(headers jose.Headers, expectedProofIssuer string, msg, signature []byte) error {
-	keyID, ok := headers.KeyID()
-	if !ok {
-		return fmt.Errorf("missed kid in jwt header")
+	key, jwkOk := headers.JWK()
+
+	keyID, kidOk := headers.KeyID()
+	if !kidOk && !jwkOk {
+		return fmt.Errorf("missed kid or jwk in jwt header")
+	}
+	if kidOk && jwkOk {
+		return fmt.Errorf("both kid and jwk in jwt header")
 	}
 
 	alg, ok := headers.Algorithm()
@@ -210,9 +215,23 @@ func (c *ProofChecker) CheckJWTProof(headers jose.Headers, expectedProofIssuer s
 		return fmt.Errorf("missed alg in jwt header")
 	}
 
-	vm, err := c.verificationMethodResolver.ResolveVerificationMethod(keyID, expectedProofIssuer)
-	if err != nil {
-		return fmt.Errorf("invalid public key id: %w", err)
+	var vm *vermethod.VerificationMethod
+	if kidOk {
+		var err error
+		vm, err = c.verificationMethodResolver.ResolveVerificationMethod(keyID, expectedProofIssuer)
+		if err != nil {
+			return fmt.Errorf("invalid public key id: %w", err)
+		}
+	} else {
+		keyBytes, err := key.PublicKeyBytes()
+		if err != nil {
+			return fmt.Errorf("invalid public jwk: %w", err)
+		}
+		vm = &vermethod.VerificationMethod{
+			Type:  "JsonWebKey2020",
+			Value: keyBytes,
+			JWK:   key,
+		}
 	}
 
 	supportedProof, err := c.getSupportedProofByAlg(alg)
