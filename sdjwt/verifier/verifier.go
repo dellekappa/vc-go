@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
 
 	"github.com/dellekappa/vc-go/crypto-ext/verifiers/ecdsa"
 	"github.com/dellekappa/vc-go/crypto-ext/verifiers/ed25519"

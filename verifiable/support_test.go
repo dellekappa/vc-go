@@ -11,12 +11,12 @@ import (
 	"testing"
 	"time"
 
+	ldcontext "github.com/dellekappa/did-go/doc/ld/context"
+	lddocloader "github.com/dellekappa/did-go/doc/ld/documentloader"
+	jsonldsig "github.com/dellekappa/did-go/doc/ld/processor"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
-	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
-	lddocloader "github.com/trustbloc/did-go/doc/ld/documentloader"
-	jsonldsig "github.com/trustbloc/did-go/doc/ld/processor"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/proof/checker"
 	"github.com/dellekappa/vc-go/proof/testsupport"

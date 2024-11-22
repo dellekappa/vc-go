@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	spi "github.com/trustbloc/kms-go/spi/storage"
+	spi "github.com/dellekappa/kcms-go/spi/storage"
 
 	storagetest "github.com/dellekappa/vc-go/legacy/test/component/storage"
 

@@ -14,14 +14,14 @@ import (
 	"testing"
 	"time"
 
+	ldprocessor "github.com/dellekappa/did-go/doc/ld/processor"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/piprate/json-gold/ld"
 	"github.com/stretchr/testify/require"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	ldprocessor "github.com/trustbloc/did-go/doc/ld/processor"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
-	"github.com/trustbloc/kms-go/spi/kms"
 
-	utiltime "github.com/trustbloc/did-go/doc/util/time"
+	utiltime "github.com/dellekappa/did-go/doc/util/time"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	"github.com/dellekappa/vc-go/jwt"

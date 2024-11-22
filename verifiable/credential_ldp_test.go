@@ -23,11 +23,11 @@ import (
 	"github.com/dellekappa/vc-go/proof/ldproofs/bbsblssignature2020"
 	"github.com/dellekappa/vc-go/proof/testsupport"
 
+	ldcontext "github.com/dellekappa/did-go/doc/ld/context"
+	jsonldsig "github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
-	jsonldsig "github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
-	"github.com/trustbloc/kms-go/spi/kms"
 
 	jsonutil "github.com/dellekappa/vc-go/util/json"
 )

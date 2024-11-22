@@ -9,9 +9,9 @@ package ed25519_test
 import (
 	"testing"
 
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	gojose "github.com/go-jose/go-jose/v3"
 

@@ -17,7 +17,7 @@ import (
 	"slices"
 
 	"github.com/btcsuite/btcd/btcec/v2"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )

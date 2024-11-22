@@ -19,12 +19,12 @@ import (
 	"fmt"
 	"strings"
 
+	util "github.com/dellekappa/did-go/doc/util/time"
 	"github.com/piprate/json-gold/ld"
-	util "github.com/trustbloc/did-go/doc/util/time"
 	"github.com/veraison/go-cose"
 	"github.com/xeipuuv/gojsonschema"
 
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 
 	jsonutil "github.com/dellekappa/vc-go/util/json"
 )

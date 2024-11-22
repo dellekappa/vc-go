@@ -8,8 +8,8 @@ package verifiable
 import (
 	"testing"
 
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/proof/testsupport"
 )

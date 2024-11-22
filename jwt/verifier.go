@@ -6,7 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 
 package jwt
 
-import "github.com/trustbloc/kms-go/doc/jose"
+import "github.com/dellekappa/kcms-go/doc/jose"
 
 // ProofChecker used to check proof of jwt vc.
 type ProofChecker interface {

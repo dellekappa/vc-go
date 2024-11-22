@@ -6,7 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 package verifiable
 
 import (
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 
 	"github.com/dellekappa/vc-go/jwt"
 )

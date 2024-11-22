@@ -20,7 +20,7 @@ import (
 	"github.com/go-jose/go-jose/v3/jwt"
 	"github.com/stretchr/testify/require"
 
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	"github.com/dellekappa/vc-go/proof/testsupport"

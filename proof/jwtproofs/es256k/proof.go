@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package es256k
 
 import (
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
 	"github.com/dellekappa/vc-go/proof"

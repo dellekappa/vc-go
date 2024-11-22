@@ -22,8 +22,8 @@ package jsonwebsignature2020
 import (
 	"crypto/sha256"
 
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/proof"
 )

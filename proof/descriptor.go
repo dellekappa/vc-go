@@ -7,8 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package proof
 
 import (
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/veraison/go-cose"
 )
 

@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/trustbloc/kms-go/spi/storage"
+	"github.com/dellekappa/kcms-go/spi/storage"
 )
 
 const (
@@ -27,9 +27,9 @@ var (
 	errIteratorExhausted = errors.New("iterator is exhausted")
 )
 
-// MockStoreProvider mock store provider.
-type MockStoreProvider struct {
-	Store              *MockStore
+// KMSMockStoreProvider mock store provider.
+type KMSMockStoreProvider struct {
+	Store              *KMSMockStore
 	Custom             storage.Store
 	ErrOpenStoreHandle error
 	ErrSetStoreConfig  error
@@ -38,21 +38,21 @@ type MockStoreProvider struct {
 	FailNamespace      string
 }
 
-// NewMockStoreProvider new store provider instance.
-func NewMockStoreProvider() *MockStoreProvider {
-	return &MockStoreProvider{Store: &MockStore{
+// NewKMSMockStoreProvider new store provider instance.
+func NewKMSMockStoreProvider() *KMSMockStoreProvider {
+	return &KMSMockStoreProvider{Store: &KMSMockStore{
 		Store: make(map[string]DBEntry),
 	}}
 }
 
 // NewCustomMockStoreProvider new mock store provider instance
 // from existing mock store.
-func NewCustomMockStoreProvider(customStore storage.Store) *MockStoreProvider {
-	return &MockStoreProvider{Custom: customStore}
+func NewCustomMockStoreProvider(customStore storage.Store) *KMSMockStoreProvider {
+	return &KMSMockStoreProvider{Custom: customStore}
 }
 
 // OpenStore opens and returns a store for given name space.
-func (s *MockStoreProvider) OpenStore(name string) (storage.Store, error) {
+func (s *KMSMockStoreProvider) OpenStore(name string) (storage.Store, error) {
 	if name == s.FailNamespace {
 		return nil, fmt.Errorf("failed to open store for name space %s", name)
 	}
@@ -65,27 +65,27 @@ func (s *MockStoreProvider) OpenStore(name string) (storage.Store, error) {
 }
 
 // SetStoreConfig always return a nil error.
-func (s *MockStoreProvider) SetStoreConfig(name string, config storage.StoreConfiguration) error {
+func (s *KMSMockStoreProvider) SetStoreConfig(name string, config storage.StoreConfiguration) error {
 	return s.ErrSetStoreConfig
 }
 
 // GetStoreConfig is not implemented.
-func (s *MockStoreProvider) GetStoreConfig(name string) (storage.StoreConfiguration, error) {
+func (s *KMSMockStoreProvider) GetStoreConfig(name string) (storage.StoreConfiguration, error) {
 	panic("implement me")
 }
 
 // GetOpenStores is not implemented.
-func (s *MockStoreProvider) GetOpenStores() []storage.Store {
+func (s *KMSMockStoreProvider) GetOpenStores() []storage.Store {
 	panic("implement me")
 }
 
 // Close closes all stores created under this store provider.
-func (s *MockStoreProvider) Close() error {
+func (s *KMSMockStoreProvider) Close() error {
 	return s.ErrClose
 }
 
 // CloseStore closes store for given name space.
-func (s *MockStoreProvider) CloseStore(name string) error {
+func (s *KMSMockStoreProvider) CloseStore(name string) error {
 	return s.ErrCloseStore
 }
 
@@ -95,8 +95,8 @@ type DBEntry struct {
 	Tags  []storage.Tag
 }
 
-// MockStore mock store.
-type MockStore struct {
+// KMSMockStore mock store.
+type KMSMockStore struct {
 	Store     map[string]DBEntry
 	lock      sync.RWMutex
 	ErrPut    error
@@ -111,7 +111,7 @@ type MockStore struct {
 }
 
 // Put stores the key and the record.
-func (s *MockStore) Put(k string, v []byte, tags ...storage.Tag) error {
+func (s *KMSMockStore) Put(k string, v []byte, tags ...storage.Tag) error {
 	if k == "" {
 		return errors.New("key is mandatory")
 	}
@@ -131,7 +131,7 @@ func (s *MockStore) Put(k string, v []byte, tags ...storage.Tag) error {
 }
 
 // Get fetches the record based on key.
-func (s *MockStore) Get(k string) ([]byte, error) {
+func (s *KMSMockStore) Get(k string) ([]byte, error) {
 	if s.ErrGet != nil {
 		return nil, s.ErrGet
 	}
@@ -148,19 +148,19 @@ func (s *MockStore) Get(k string) ([]byte, error) {
 }
 
 // GetTags is not implemented.
-func (s *MockStore) GetTags(key string) ([]storage.Tag, error) {
+func (s *KMSMockStore) GetTags(key string) ([]storage.Tag, error) {
 	panic("implement me")
 }
 
 // GetBulk is not implemented.
-func (s *MockStore) GetBulk(keys ...string) ([][]byte, error) {
+func (s *KMSMockStore) GetBulk(keys ...string) ([][]byte, error) {
 	panic("implement me")
 }
 
 // Query returns all data that satisfies the expression. Expression format: TagName:TagValue.
 // If TagValue is not provided, then all data associated with the TagName will be returned.
 // For now, expression can only be a single tag Name + Value pair.
-func (s *MockStore) Query(expression string, _ ...storage.QueryOption) (storage.Iterator, error) {
+func (s *KMSMockStore) Query(expression string, _ ...storage.QueryOption) (storage.Iterator, error) {
 	if s.ErrQuery != nil {
 		return nil, s.ErrQuery
 	}
@@ -196,7 +196,7 @@ func (s *MockStore) Query(expression string, _ ...storage.QueryOption) (storage.
 }
 
 // Delete will delete record with k key.
-func (s *MockStore) Delete(k string) error {
+func (s *KMSMockStore) Delete(k string) error {
 	s.lock.Lock()
 	delete(s.Store, k)
 	s.lock.Unlock()
@@ -205,7 +205,7 @@ func (s *MockStore) Delete(k string) error {
 }
 
 // Batch stores a batch of operations.
-func (s *MockStore) Batch(operations []storage.Operation) error {
+func (s *KMSMockStore) Batch(operations []storage.Operation) error {
 	if s.ErrBatch != nil {
 		return s.ErrBatch
 	}
@@ -224,16 +224,16 @@ func (s *MockStore) Batch(operations []storage.Operation) error {
 }
 
 // Flush is not implemented.
-func (s *MockStore) Flush() error {
+func (s *KMSMockStore) Flush() error {
 	panic("implement me")
 }
 
 // Close is not implemented.
-func (s *MockStore) Close() error {
+func (s *KMSMockStore) Close() error {
 	return s.ErrClose
 }
 
-func (s *MockStore) getMatchingKeysAndDBEntries(tagName, tagValue string) ([]string, []DBEntry) {
+func (s *KMSMockStore) getMatchingKeysAndDBEntries(tagName, tagValue string) ([]string, []DBEntry) {
 	var matchAnyValue bool
 	if tagValue == "" {
 		matchAnyValue = true

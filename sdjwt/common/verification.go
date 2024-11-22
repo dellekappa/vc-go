@@ -19,7 +19,7 @@ import (
 	"github.com/go-jose/go-jose/v3/jwt"
 	"github.com/mitchellh/mapstructure"
 
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 
 	afgjwt "github.com/dellekappa/vc-go/jwt"
 	utils "github.com/dellekappa/vc-go/util/maphelpers"

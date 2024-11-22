@@ -23,8 +23,8 @@ import (
 	"github.com/dellekappa/vc-go/proof/checker"
 	"github.com/dellekappa/vc-go/proof/testsupport"
 
-	"github.com/trustbloc/kms-go/doc/jose"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/sdjwt/common"
 	"github.com/dellekappa/vc-go/sdjwt/holder"

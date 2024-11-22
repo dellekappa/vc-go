@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 package jwt
 
 import (
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 )
 
 // SignParameters contains parameters of signing for jwt vc.

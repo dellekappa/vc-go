@@ -11,10 +11,10 @@ import (
 	"encoding/json"
 	"testing"
 
+	jsonld "github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	"github.com/dellekappa/vc-go/proof/creator"

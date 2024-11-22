@@ -15,13 +15,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/did"
+	"github.com/dellekappa/did-go/doc/ld/documentloader"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
+	mockwrapper "github.com/dellekappa/kcms-go/mock/wrapper"
 	"github.com/multiformats/go-multibase"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/did"
-	"github.com/trustbloc/did-go/doc/ld/documentloader"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
-	mockwrapper "github.com/trustbloc/kms-go/mock/wrapper"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 	"github.com/dellekappa/vc-go/dataintegrity/models"

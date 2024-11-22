@@ -15,8 +15,8 @@ package bbsblssignature2020
 // It uses BLS12-381 pairing-friendly curve (https://tools.ietf.org/html/draft-irtf-cfrg-pairing-friendly-curves-03).
 
 import (
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/proof"
 )

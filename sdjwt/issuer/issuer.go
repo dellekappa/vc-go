@@ -53,8 +53,8 @@ import (
 
 	"github.com/go-jose/go-jose/v3/jwt"
 
-	"github.com/trustbloc/kms-go/doc/jose"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
 
 	afgjwt "github.com/dellekappa/vc-go/jwt"
 	"github.com/dellekappa/vc-go/sdjwt/common"

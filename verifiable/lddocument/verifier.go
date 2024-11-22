@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/did-go/doc/ld/proof"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/did-go/doc/ld/proof"
 )
 
 // ProofChecker implements JSON LD document proof check.

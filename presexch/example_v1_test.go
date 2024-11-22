@@ -11,11 +11,11 @@ import (
 	"fmt"
 	"time"
 
+	ldcontext "github.com/dellekappa/did-go/doc/ld/context"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
 	"github.com/google/uuid"
-	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
 
-	utiltime "github.com/trustbloc/did-go/doc/util/time"
+	utiltime "github.com/dellekappa/did-go/doc/util/time"
 
 	. "github.com/dellekappa/vc-go/presexch"
 	"github.com/dellekappa/vc-go/verifiable"

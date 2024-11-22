@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 
-	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
+	jsonld "github.com/dellekappa/did-go/doc/ld/processor"
 
 	"github.com/dellekappa/vc-go/dataintegrity/models"
 	"github.com/dellekappa/vc-go/verifiable/lddocument"

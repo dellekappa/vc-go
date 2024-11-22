@@ -19,7 +19,7 @@ import (
 	"net/url"
 	"strings"
 
-	vdrapi "github.com/trustbloc/did-go/vdr/api"
+	vdrapi "github.com/dellekappa/did-go/vdr/api"
 
 	"github.com/dellekappa/vc-go/status/internal/identityhub"
 	"github.com/dellekappa/vc-go/verifiable"

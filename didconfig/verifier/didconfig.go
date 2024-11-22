@@ -15,12 +15,12 @@ import (
 	"net/url"
 	"os"
 
+	diddoc "github.com/dellekappa/did-go/doc/did"
+	"github.com/dellekappa/did-go/method/key"
+	"github.com/dellekappa/did-go/vdr"
+	vdrapi "github.com/dellekappa/did-go/vdr/api"
+	"github.com/dellekappa/kcms-go/doc/jose"
 	jsonld "github.com/piprate/json-gold/ld"
-	diddoc "github.com/trustbloc/did-go/doc/did"
-	"github.com/trustbloc/did-go/method/key"
-	"github.com/trustbloc/did-go/vdr"
-	vdrapi "github.com/trustbloc/did-go/vdr/api"
-	"github.com/trustbloc/kms-go/doc/jose"
 
 	"github.com/dellekappa/vc-go/jwt"
 	"github.com/dellekappa/vc-go/proof/defaults"

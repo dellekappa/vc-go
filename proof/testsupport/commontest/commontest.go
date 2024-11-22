@@ -13,13 +13,13 @@ import (
 	"fmt"
 	"testing"
 
+	jsonld "github.com/dellekappa/did-go/doc/ld/processor"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk" // nolint:typecheck
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	jsonld "github.com/trustbloc/did-go/doc/ld/processor"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
-	"github.com/trustbloc/kms-go/doc/jose/jwk" // nolint:typecheck
-	"github.com/trustbloc/kms-go/spi/kms"
 	"github.com/veraison/go-cose"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"

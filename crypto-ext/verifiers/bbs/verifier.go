@@ -11,9 +11,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dellekappa/did-go/doc/ld/proof"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	"github.com/trustbloc/did-go/doc/ld/proof"
-	"github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )

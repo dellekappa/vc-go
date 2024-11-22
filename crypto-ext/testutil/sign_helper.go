@@ -14,9 +14,9 @@ import (
 	"crypto/x509"
 
 	"github.com/btcsuite/btcd/btcec/v2"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
-	"github.com/trustbloc/kms-go/spi/kms"
-	wrapperapi "github.com/trustbloc/kms-go/wrapper/api"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
+	"github.com/dellekappa/kcms-go/spi/kms"
+	suiteapi "github.com/dellekappa/kcms-go/suite/api"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
@@ -89,7 +89,7 @@ func CreateEDSASecp256k1(jwkVM bool) (*ECDSASigner, *pubkey.PublicKey, error) {
 }
 
 // CreateKMSSigner created signer and corresponding public key.
-func CreateKMSSigner(keyType kms.KeyType, jwkVM bool) (wrapperapi.FixedKeyCrypto, *pubkey.PublicKey, error) {
+func CreateKMSSigner(keyType kms.KeyType, jwkVM bool) (suiteapi.FixedKeyCrypto, *pubkey.PublicKey, error) {
 	kmsCrypto, err := kmscryptoutil.LocalKMSCryptoErr()
 	if err != nil {
 		return nil, nil, err

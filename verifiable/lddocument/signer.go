@@ -10,10 +10,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/did-go/doc/ld/proof"
-	afgotime "github.com/trustbloc/did-go/doc/util/time"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/did-go/doc/ld/proof"
+	afgotime "github.com/dellekappa/did-go/doc/util/time"
+	"github.com/dellekappa/kcms-go/spi/kms"
 )
 
 const defaultProofPurpose = "assertionMethod"

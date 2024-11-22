@@ -14,11 +14,11 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/dellekappa/did-go/doc/did"
+	model "github.com/dellekappa/did-go/doc/did/endpoint"
+	mockvdr "github.com/dellekappa/did-go/vdr/mock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/did"
-	model "github.com/trustbloc/did-go/doc/did/endpoint"
-	mockvdr "github.com/trustbloc/did-go/vdr/mock"
 
 	"github.com/dellekappa/vc-go/status/internal/identityhub"
 	. "github.com/dellekappa/vc-go/status/resolver"

@@ -18,7 +18,7 @@ import (
 	"github.com/go-jose/go-jose/v3/jwt"
 	"github.com/tidwall/gjson"
 
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 )
 
 const (

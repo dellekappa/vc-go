@@ -7,8 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package pubkey
 
 import (
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/spi/kms"
 )
 
 // BytesKey contains bytes of public key.

@@ -8,7 +8,7 @@ package verifiable
 import (
 	"fmt"
 
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 
 	"github.com/dellekappa/vc-go/jwt"
 )

@@ -13,8 +13,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	vdr "github.com/dellekappa/did-go/vdr/mock"
 	"github.com/stretchr/testify/require"
-	vdr "github.com/trustbloc/did-go/vdr/mock"
 
 	"github.com/dellekappa/vc-go/verifiable"
 

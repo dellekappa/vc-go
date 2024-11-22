@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/trustbloc/kms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose"
 )
 
 // NewJOSESigner wraps ProofCreator into jose signer.

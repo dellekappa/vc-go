@@ -15,8 +15,8 @@ import (
 
 	"github.com/go-jose/go-jose/v3/jwt"
 
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	afgjwt "github.com/dellekappa/vc-go/jwt"

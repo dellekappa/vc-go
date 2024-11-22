@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
+	docjsonld "github.com/dellekappa/did-go/doc/ld/validator"
 	"github.com/fxamacker/cbor/v2"
 	jsonld "github.com/piprate/json-gold/ld"
-	docjsonld "github.com/trustbloc/did-go/doc/ld/validator"
 	"github.com/xeipuuv/gojsonschema"
 
 	"github.com/dellekappa/vc-go/dataintegrity"

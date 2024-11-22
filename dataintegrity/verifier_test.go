@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/did"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
-	"github.com/trustbloc/did-go/doc/did"
 
 	"github.com/dellekappa/vc-go/dataintegrity/models"
 )

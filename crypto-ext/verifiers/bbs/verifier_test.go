@@ -11,12 +11,12 @@ import (
 	"testing"
 
 	"github.com/btcsuite/btcutil/base58"
+	"github.com/dellekappa/did-go/doc/ld/proof"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	gojose "github.com/go-jose/go-jose/v3"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/ld/proof"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
-	"github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 )

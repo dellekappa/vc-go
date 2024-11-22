@@ -11,10 +11,10 @@ import (
 	"fmt"
 	"testing"
 
+	ldcontext "github.com/dellekappa/did-go/doc/ld/context"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
 	"github.com/piprate/json-gold/ld"
 	"github.com/stretchr/testify/require"
-	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
 
 	"github.com/dellekappa/vc-go/verifiable"
 )

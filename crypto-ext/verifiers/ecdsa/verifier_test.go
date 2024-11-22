@@ -9,10 +9,10 @@ package ecdsa_test
 import (
 	"testing"
 
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	gojose "github.com/go-jose/go-jose/v3"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"

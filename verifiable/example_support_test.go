@@ -9,9 +9,9 @@ package verifiable_test
 import (
 	"encoding/base64"
 
+	lddocloader "github.com/dellekappa/did-go/doc/ld/documentloader"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	lddocloader "github.com/trustbloc/did-go/doc/ld/documentloader"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
 
 	"github.com/dellekappa/vc-go/verifiable"
 )

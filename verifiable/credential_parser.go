@@ -11,9 +11,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/dellekappa/kcms-go/doc/jose"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/samber/lo"
-	"github.com/trustbloc/kms-go/doc/jose"
 	"github.com/veraison/go-cose"
 
 	"github.com/dellekappa/vc-go/sdjwt/common"

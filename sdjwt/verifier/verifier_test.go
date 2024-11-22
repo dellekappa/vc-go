@@ -22,8 +22,8 @@ import (
 	"github.com/go-jose/go-jose/v3/jwt"
 	"github.com/stretchr/testify/require"
 
-	afjose "github.com/trustbloc/kms-go/doc/jose"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
+	afjose "github.com/dellekappa/kcms-go/doc/jose"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	afjwt "github.com/dellekappa/vc-go/jwt"

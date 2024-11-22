@@ -11,9 +11,9 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/dellekappa/did-go/doc/did"
+	model "github.com/dellekappa/did-go/doc/did/endpoint"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/did"
-	model "github.com/trustbloc/did-go/doc/did/endpoint"
 
 	. "github.com/dellekappa/vc-go/status/internal/identityhub"
 )

@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/did-go/doc/ld/proof"
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/did-go/doc/ld/proof"
 
 	"github.com/dellekappa/vc-go/proof/ldproofs/bbsblssignatureproof2020"
 	"github.com/dellekappa/vc-go/vermethod"

@@ -12,12 +12,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/dellekappa/did-go/doc/did"
+	ldcontext "github.com/dellekappa/did-go/doc/ld/context"
+	ldtestutil "github.com/dellekappa/did-go/doc/ld/testutil"
+	"github.com/dellekappa/did-go/method/httpbinding"
+	"github.com/dellekappa/did-go/vdr"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/did"
-	ldcontext "github.com/trustbloc/did-go/doc/ld/context"
-	ldtestutil "github.com/trustbloc/did-go/doc/ld/testutil"
-	"github.com/trustbloc/did-go/method/httpbinding"
-	"github.com/trustbloc/did-go/vdr"
 )
 
 func TestInterop(t *testing.T) {

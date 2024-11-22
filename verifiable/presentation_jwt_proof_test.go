@@ -15,9 +15,9 @@ import (
 	"github.com/dellekappa/vc-go/jwt"
 	"github.com/dellekappa/vc-go/proof/testsupport"
 
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
-	utiltime "github.com/trustbloc/did-go/doc/util/time"
+	utiltime "github.com/dellekappa/did-go/doc/util/time"
 )
 
 func TestParsePresentationFromJWS(t *testing.T) {

@@ -14,12 +14,12 @@ import (
 	"fmt"
 	"hash"
 
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/spi/kms"
+	suiteapi "github.com/dellekappa/kcms-go/suite/api"
 	"github.com/multiformats/go-multibase"
 	"github.com/piprate/json-gold/ld"
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/spi/kms"
-	wrapperapi "github.com/trustbloc/kms-go/wrapper/api"
 
 	"github.com/dellekappa/vc-go/crypto-ext/pubkey"
 	"github.com/dellekappa/vc-go/crypto-ext/verifiers/ecdsa"
@@ -54,7 +54,7 @@ func WithStaticSigner(signer Signer) SignerGetter {
 //
 // This SignerGetter assumes that the public key JWKs provided were received
 // from the same kmscrypto.KMSCrypto implementation.
-func WithKMSCryptoWrapper(kmsCrypto wrapperapi.KMSCryptoSigner) SignerGetter {
+func WithKMSCryptoWrapper(kmsCrypto suiteapi.KMSCryptoSigner) SignerGetter {
 	return func(pub *jwk.JWK) (Signer, error) {
 		return kmsCrypto.FixedKeySigner(pub)
 	}

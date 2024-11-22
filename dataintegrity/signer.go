@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dellekappa/did-go/doc/did"
 	"github.com/tidwall/sjson"
-	"github.com/trustbloc/did-go/doc/did"
 
 	"github.com/dellekappa/vc-go/dataintegrity/models"
 	"github.com/dellekappa/vc-go/dataintegrity/suite"

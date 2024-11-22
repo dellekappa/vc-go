@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/did"
+	"github.com/dellekappa/did-go/doc/ld/documentloader"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
-	"github.com/trustbloc/did-go/doc/did"
-	"github.com/trustbloc/did-go/doc/ld/documentloader"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/internal/testutil/kmscryptoutil"
 

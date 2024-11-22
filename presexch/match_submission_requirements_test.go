@@ -14,13 +14,13 @@ import (
 	"testing"
 	"time"
 
+	ldprocessor "github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	ldprocessor "github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/kms-go/spi/kms"
 
-	utiltime "github.com/trustbloc/did-go/doc/util/time"
+	utiltime "github.com/dellekappa/did-go/doc/util/time"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	"github.com/dellekappa/vc-go/presexch"

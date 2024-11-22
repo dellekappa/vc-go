@@ -19,12 +19,12 @@ import (
 	"testing"
 
 	"github.com/btcsuite/btcd/btcec/v2"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk"
+	"github.com/dellekappa/kcms-go/doc/jose/jwk/jwksupport"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
+	suiteapi "github.com/dellekappa/kcms-go/suite/api"
 	"github.com/stretchr/testify/require"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	"github.com/trustbloc/kms-go/doc/jose/jwk"
-	"github.com/trustbloc/kms-go/doc/jose/jwk/jwksupport"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
-	wrapperapi "github.com/trustbloc/kms-go/wrapper/api"
 
 	"github.com/dellekappa/vc-go/crypto-ext/testutil"
 	vered25519 "github.com/dellekappa/vc-go/crypto-ext/verifiers/ed25519"
@@ -429,7 +429,7 @@ func ecdsaSecp256k1PairDesc(publicKeyID *SigningKey, jwkVM bool) (*creator.Proof
 }
 
 func kmsPairDesc(
-	kmsCrypto wrapperapi.KMSCrypto,
+	kmsCrypto suiteapi.KMSCrypto,
 	sigKey *SigningKey,
 ) (*creator.ProofCreator, mockedVerificationMethod, error) {
 	pubJWK, err := kmsCrypto.Create(sigKey.Type)

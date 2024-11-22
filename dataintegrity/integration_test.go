@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/did"
+	"github.com/dellekappa/did-go/doc/ld/documentloader"
+	mockldstore "github.com/dellekappa/did-go/doc/ld/mock"
+	"github.com/dellekappa/did-go/doc/ld/store"
+	kmsapi "github.com/dellekappa/kcms-go/spi/kms"
 	"github.com/stretchr/testify/require"
 	"github.com/tidwall/sjson"
-	"github.com/trustbloc/did-go/doc/did"
-	"github.com/trustbloc/did-go/doc/ld/documentloader"
-	mockldstore "github.com/trustbloc/did-go/doc/ld/mock"
-	"github.com/trustbloc/did-go/doc/ld/store"
-	kmsapi "github.com/trustbloc/kms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/dataintegrity/models"
 	"github.com/dellekappa/vc-go/dataintegrity/suite/ecdsa2019"

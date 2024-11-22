@@ -16,9 +16,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/did"
+	vdrapi "github.com/dellekappa/did-go/vdr/api"
 	jsonld "github.com/piprate/json-gold/ld"
-	"github.com/trustbloc/did-go/doc/did"
-	vdrapi "github.com/trustbloc/did-go/vdr/api"
 
 	"github.com/dellekappa/vc-go/didconfig/verifier"
 )

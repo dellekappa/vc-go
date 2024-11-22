@@ -21,16 +21,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/did-go/doc/ld/proof"
+	docjsonld "github.com/dellekappa/did-go/doc/ld/validator"
+	"github.com/dellekappa/kcms-go/doc/jose"
 	jsonld "github.com/piprate/json-gold/ld"
 	"github.com/samber/lo"
-	"github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/did-go/doc/ld/proof"
-	docjsonld "github.com/trustbloc/did-go/doc/ld/validator"
-	"github.com/trustbloc/kms-go/doc/jose"
 	"github.com/veraison/go-cose"
 	"github.com/xeipuuv/gojsonschema"
 
-	util "github.com/trustbloc/did-go/doc/util/time"
+	util "github.com/dellekappa/did-go/doc/util/time"
 
 	"github.com/dellekappa/vc-go/cwt"
 	"github.com/dellekappa/vc-go/dataintegrity"

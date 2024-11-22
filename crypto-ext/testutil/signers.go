@@ -14,8 +14,8 @@ import (
 	"crypto/rsa"
 	"strings"
 
+	"github.com/dellekappa/kcms-go/doc/jose"
 	"github.com/trustbloc/bbs-signature-go/bbs12381g2pub"
-	"github.com/trustbloc/kms-go/doc/jose"
 )
 
 // Ed25519Signer is a Jose compliant signer.

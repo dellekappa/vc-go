@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	ldprocessor "github.com/trustbloc/did-go/doc/ld/processor"
-	"github.com/trustbloc/did-go/doc/ld/proof"
-	"github.com/trustbloc/kms-go/spi/kms"
+	ldprocessor "github.com/dellekappa/did-go/doc/ld/processor"
+	"github.com/dellekappa/did-go/doc/ld/proof"
+	"github.com/dellekappa/kcms-go/spi/kms"
 
 	"github.com/dellekappa/vc-go/verifiable/lddocument"
 )

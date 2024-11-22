@@ -19,7 +19,7 @@ import (
 
 	"github.com/dellekappa/vc-go/proof/testsupport"
 
-	"github.com/trustbloc/kms-go/spi/kms"
+	"github.com/dellekappa/kcms-go/spi/kms"
 )
 
 func TestV1JWTCredClaimsMarshalJWS(t *testing.T) {
