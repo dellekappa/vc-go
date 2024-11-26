@@ -1,6 +1,7 @@
 package mdoc
 
 import (
+	"crypto/rand"
 	"fmt"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
@@ -79,6 +80,18 @@ type ErrorCode int
 
 func NewDocument(docType DocType, signed *cose.UntaggedSign1Message, claims Claims) (Document, error) {
 
+	issuerSigned, err := NewIssuerSigned(signed, claims)
+	if err != nil {
+		return Document{}, err
+	}
+
+	return Document{
+		DocType:      docType,
+		IssuerSigned: issuerSigned,
+	}, nil
+}
+
+func NewIssuerSigned(signed *cose.UntaggedSign1Message, claims Claims) (IssuerSigned, error) {
 	encodedNamespaces := make(IssuerNameSpaces)
 	for ns, values := range claims {
 		encodedItems := make(IssuerSignedItemBytes, len(values))
@@ -86,22 +99,82 @@ func NewDocument(docType DocType, signed *cose.UntaggedSign1Message, claims Clai
 			encodedItem, err := encodeModeTaggedEncodedCBOR.Marshal(&v)
 			//encodedItem, err := cbor.Marshal(&v)
 			if err != nil {
-				return Document{}, err
+				return IssuerSigned{}, err
 			}
 			taggedEncodedItem, err := NewTaggedEncodedCBOR(encodedItem)
 			if err != nil {
-				return Document{}, err
+				return IssuerSigned{}, err
 			}
 			encodedItems[i] = *taggedEncodedItem
 		}
 		encodedNamespaces[ns] = encodedItems
 	}
 
-	return Document{
-		DocType: docType,
-		IssuerSigned: IssuerSigned{
-			NameSpaces: encodedNamespaces,
-			IssuerAuth: IssuerAuth(*signed),
-		},
+	return IssuerSigned{
+		NameSpaces: encodedNamespaces,
+		IssuerAuth: IssuerAuth(*signed),
 	}, nil
+}
+
+type Claims map[NameSpace][]Claim
+
+type Claim struct {
+	DigestID          uint                  `cbor:"digestID"`
+	Random            []byte                `cbor:"random"`
+	ElementIdentifier DataElementIdentifier `cbor:"elementIdentifier"`
+	ElementValue      DataElementValue      `cbor:"elementValue"`
+}
+
+func newClaims(data map[string]map[string]interface{}) (Claims, error) {
+	cborTags := map[string]uint64{
+		"birth_date":    1004,
+		"expiry_date":   1004,
+		"issue_date":    1004,
+		"issuance_date": 1004,
+	}
+
+	digestCount := uint(0)
+	namespaces := make(Claims)
+	for ns, values := range data {
+		items := make([]Claim, 0)
+		for k, v := range values {
+
+			if t, ok := cborTags[k]; ok {
+				v = cbor.Tag{
+					Number:  t,
+					Content: v,
+				}
+			}
+
+			salt := make([]byte, 32)
+			_, err := rand.Read(salt)
+			if err != nil {
+				return nil, err
+			}
+
+			item := Claim{
+				DigestID:          digestCount,
+				Random:            salt,
+				ElementIdentifier: DataElementIdentifier(k),
+				ElementValue:      v,
+			}
+
+			//cborItem, err := cbor.Marshal(&item)
+			//if err != nil {
+			//	return nil, err
+			//}
+
+			//taggedItem := cbor.Tag{
+			//	Number: 24,
+			//	Content: &item,
+			//}
+
+			items = append(items, item)
+
+			digestCount++
+		}
+		namespaces[NameSpace(ns)] = items
+	}
+
+	return namespaces, nil
 }

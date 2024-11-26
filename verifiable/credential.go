@@ -2350,7 +2350,7 @@ func (vc *Credential) CreateSignedMDocVC(
 		return nil, err
 	}
 
-	msgRaw, msg, err := claims.MarshalMDoc(signatureAlg, proofCreator, keyID, opts.certs)
+	msgRaw, msg, err := claims.MarshalIssuerSigned(signatureAlg, proofCreator, keyID, opts.certs)
 	if err != nil {
 		return nil, err
 	}

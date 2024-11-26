@@ -16,7 +16,7 @@ import (
 // MDocEnvelope contains information about MDoc that envelops credential.
 type MDocEnvelope struct {
 	MDocMessageRaw    []byte
-	MDocMessageParsed *mdoc.Document
+	MDocMessageParsed *mdoc.IssuerSigned
 }
 
 // MDocCredClaims converts Verifiable Credential into MDoc Credential claims, which can be than serialized.
@@ -84,26 +84,29 @@ func newMDocCredClaims(vc *Credential, hashAlg crypto.Hash) (*MDocCredClaims, er
 	return credClaims, nil
 }
 
-// MarshalMDoc serializes into signed MDOC.
-func (jcc *MDocCredClaims) MarshalMDoc(
+// MarshalIssuerSigned serializes into issuer signed MDOC object.
+func (jcc *MDocCredClaims) MarshalIssuerSigned(
 	signatureAlg cose.Algorithm,
 	signer cwt.ProofCreator,
 	_ string,
 	certs []*x509.Certificate,
-) ([]byte, *mdoc.Document, error) {
+) ([]byte, *mdoc.IssuerSigned, error) {
 	issuerAuth, err := mdoc.SignMobileSecurityObject(jcc.MobileSecurityObject, signatureAlg, signer, certs)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	doc, err := mdoc.NewDocument(jcc.MobileSecurityObject.DocType, issuerAuth, jcc.claims)
-
-	encoded, err := cbor.Marshal(doc)
+	signed, err := mdoc.NewIssuerSigned(issuerAuth, jcc.claims)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return encoded, &doc, nil
+	encoded, err := cbor.Marshal(signed)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return encoded, &signed, nil
 }
 
 // MakeMDocOpts provides MDoc options for VC.
