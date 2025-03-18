@@ -65,7 +65,7 @@ func TestParsePresentationFromJWS(t *testing.T) {
 			WithPresProofChecker(wrongKeyProofChecher))
 
 		require.Error(t, err)
-		require.Contains(t, err.Error(), "decoding of Verifiable Presentation from JWS")
+		require.Contains(t, err.Error(), "decoding of Verifiable W3CPresentation from JWS")
 		require.Nil(t, vp)
 	})
 
@@ -184,7 +184,7 @@ func TestParsePresentationWithVCJWT(t *testing.T) {
 	vc, err := CreateCredential(vcc, nil)
 	r.NoError(err)
 
-	t.Run("Presentation with VC defined as JWS", func(t *testing.T) {
+	t.Run("W3CPresentation with VC defined as JWS", func(t *testing.T) {
 		proofCreators, proofChecker := testsupport.NewKMSSignersAndVerifier(t, []*testsupport.SigningKey{
 			{Type: kms.RSARS256Type, PublicKeyID: "did:example:76e12ec712ebc6f1c221ebfeb1f#issuer-key"},
 			{Type: kms.ED25519Type, PublicKeyID: "did:123#holder-key"},
@@ -195,10 +195,12 @@ func TestParsePresentationWithVCJWT(t *testing.T) {
 		r.NotNil(jwtVC)
 
 		// Create and encode VP.
-		vp, err := NewPresentation(WithCredentials(jwtVC))
+		vp, err := NewW3CPresentation(
+			WithID("urn:uuid:2978344f-8596-4c3a-a978-8fcaba3903c"),
+			WithCredentials(jwtVC),
+		)
 		r.NoError(err)
 
-		vp.ID = "urn:uuid:2978344f-8596-4c3a-a978-8fcaba3903c"
 		vp.Holder = "did:example:fbfeb1f712ebc6f1c276e12ec21"
 
 		jwtClaims, err := vp.JWTClaims([]string{}, true)
@@ -220,15 +222,17 @@ func TestParsePresentationWithVCJWT(t *testing.T) {
 		r.Equal(jwtVC.stringJSON(t), vcDecoded.stringJSON(t))
 	})
 
-	t.Run("Presentation with VC defined as VC struct", func(t *testing.T) {
+	t.Run("W3CPresentation with VC defined as VC struct", func(t *testing.T) {
 		proofCreators, proofCreator := testsupport.NewKMSSignersAndVerifier(t, []*testsupport.SigningKey{
 			{Type: kms.ED25519Type, PublicKeyID: "did:123#holder-key"},
 		})
 		// Create and encode VP.
-		vp, err := NewPresentation(WithCredentials(vc))
+		vp, err := NewW3CPresentation(
+			WithID("urn:uuid:5978344f-8596-4c3a-a978-8fcaba3903c"),
+			WithCredentials(vc),
+		)
 		r.NoError(err)
 
-		vp.ID = "urn:uuid:5978344f-8596-4c3a-a978-8fcaba3903c"
 		vp.Holder = "did:example:abfeb1f712ebc6f1c276e12ec21"
 
 		jwtClaims, err := vp.JWTClaims([]string{}, true)
@@ -259,10 +263,12 @@ func TestParsePresentationWithVCJWT(t *testing.T) {
 		r.NoError(err)
 		r.NotNil(jwtVC)
 
-		vp, err := NewPresentation(WithCredentials(jwtVC))
+		vp, err := NewW3CPresentation(
+			WithID("urn:uuid:0978344f-8596-4c3a-a978-8fcaba3903c"),
+			WithCredentials(jwtVC),
+		)
 		r.NoError(err)
 
-		vp.ID = "urn:uuid:0978344f-8596-4c3a-a978-8fcaba3903c"
 		vp.Holder = "did:example:ebfeb2f712ebc6f1c276e12ec21"
 
 		jwtClaims, err := vp.JWTClaims([]string{}, true)

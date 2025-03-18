@@ -77,8 +77,8 @@ func ExamplePresentationDefinition_CreateVP_v1() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -187,8 +187,8 @@ func ExamplePresentationDefinition_CreateVP_v1_With_LDP_FormatAndProof() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -297,8 +297,8 @@ func ExamplePresentationDefinition_CreateVP_v1_With_LDPVC_FormatAndProof() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -431,8 +431,8 @@ func ExamplePresentationDefinition_CreateVP_multipleMatches() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -617,8 +617,8 @@ func ExamplePresentationDefinition_CreateVP_multipleMatchesDisclosure() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -867,8 +867,8 @@ func ExamplePresentationDefinition_CreateVP_submissionRequirementsLimitDisclosur
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -1100,8 +1100,8 @@ func ExamplePresentationDefinition_CreateVP_submissionRequirements() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -1446,8 +1446,8 @@ func ExamplePresentationDefinition_CreateVP_submissionRequirements2() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -1663,7 +1663,7 @@ func ExamplePresentationDefinition_Match() {
 	// verifier parses the vp
 	// note: parsing this VP without verifying the proof just for example purposes.
 	//       Always verify proofs in production!
-	receivedVP, err := verifiable.ParsePresentation(vpBytes,
+	receivedVP, err := verifiable.ParseW3CPresentation(vpBytes,
 		verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(loader))
 	if err != nil {
@@ -1672,7 +1672,7 @@ func ExamplePresentationDefinition_Match() {
 
 	// verifier matches the received VP against their definitions
 	matched, err := verifierDefinitions.Match(
-		[]*verifiable.Presentation{receivedVP}, loader,
+		[]verifiable.Presentation{receivedVP}, loader,
 		WithCredentialOptions(
 			verifiable.WithDisabledProofCheck(),
 			verifiable.WithJSONLDDocumentLoader(loader)),
@@ -1754,7 +1754,7 @@ func ExamplePresentationDefinition_Match_jwt_vp_path_workaround() {
 		panic(err)
 	}
 
-	receivedVP, err := verifiable.ParsePresentation(vpBytes,
+	receivedVP, err := verifiable.ParseW3CPresentation(vpBytes,
 		verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(loader),
 	)
@@ -1764,7 +1764,7 @@ func ExamplePresentationDefinition_Match_jwt_vp_path_workaround() {
 
 	// verifier matches the received VP against their definitions
 	matched, err := verifierDefinitions.Match(
-		[]*verifiable.Presentation{receivedVP}, loader,
+		[]verifiable.Presentation{receivedVP}, loader,
 		WithCredentialOptions(
 			verifiable.WithDisabledProofCheck(),
 			verifiable.WithJSONLDDocumentLoader(loader)),
@@ -1788,8 +1788,8 @@ func ExamplePresentationDefinition_Match_jwt_vp_path_workaround() {
 }
 
 func newPresentationSubmission(
-	submission *PresentationSubmission, vcs ...*verifiable.Credential) (*verifiable.Presentation, error) {
-	vp, err := verifiable.NewPresentation(verifiable.WithCredentials(vcs...))
+	submission *PresentationSubmission, vcs ...*verifiable.Credential) (*verifiable.W3CPresentation, error) {
+	vp, err := verifiable.NewW3CPresentation(verifiable.WithCredentials(vcs...))
 	if err != nil {
 		return nil, err
 	}
@@ -1798,8 +1798,7 @@ func newPresentationSubmission(
 	vp.Type = append(vp.Type, "PresentationSubmission")
 
 	if submission != nil {
-		vp.CustomFields = make(map[string]interface{})
-		vp.CustomFields["presentation_submission"] = toExampleMap(submission)
+		vp.CustomFields()["presentation_submission"] = toExampleMap(submission)
 	}
 
 	return vp, nil

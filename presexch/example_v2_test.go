@@ -100,8 +100,8 @@ func ExamplePresentationDefinition_CreateVP_v2() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -227,8 +227,8 @@ func ExamplePresentationDefinition_CreateVP_with_LdpVC_Format() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -354,8 +354,8 @@ func ExamplePresentationDefinition_CreateVP_with_Ldp_Format() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -481,8 +481,8 @@ func ExamplePresentationDefinition_CreateVP_withFormatInInputDescriptor() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
@@ -733,8 +733,8 @@ func ExamplePresentationDefinition_CreateVP_withFrame() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 	vp.Credentials()[0].Proofs()[0]["created"] = dummy
 	vp.Credentials()[0].Proofs()[0]["proofValue"] = dummy
 
@@ -924,8 +924,8 @@ func ExamplePresentationDefinition_CreateVP_limitedDisclosureSkipsNonSDVCs() {
 		panic(err)
 	}
 
-	vp.ID = dummy
-	vp.CustomFields["presentation_submission"].(*PresentationSubmission).ID = dummy
+	vp.SetID(dummy)
+	vp.CustomFields()["presentation_submission"].(*PresentationSubmission).ID = dummy
 
 	presentedVC := vp.Credentials()[0]
 

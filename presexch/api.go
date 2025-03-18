@@ -9,6 +9,7 @@ package presexch
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -42,7 +43,7 @@ type PresentationSubmission struct {
 	// ID unique resource identifier.
 	ID     string `json:"id,omitempty"`
 	Locale string `json:"locale,omitempty"`
-	// DefinitionID links the submission to its definition and must be the id value of a valid Presentation Definition.
+	// DefinitionID links the submission to its definition and must be the id value of a valid W3CPresentation Definition.
 	DefinitionID  string                    `json:"definition_id,omitempty"`
 	DescriptorMap []*InputDescriptorMapping `json:"descriptor_map"`
 }
@@ -89,9 +90,9 @@ func WithDisableSchemaValidation() MatchOption {
 }
 
 // WithMergedSubmission provides a presentation submission that's external to the Presentations being matched,
-// which contains the descriptor mapping for each Presentation.
+// which contains the descriptor mapping for each W3CPresentation.
 //
-// If there are multiple Presentations, this merged submission should use the Presentation array as the JSON Path root
+// If there are multiple Presentations, this merged submission should use the W3CPresentation array as the JSON Path root
 // when referencing the contained Presentations and the Credentials within.
 func WithMergedSubmission(submission *PresentationSubmission) MatchOption {
 	return func(m *MatchOptions) {
@@ -100,10 +101,10 @@ func WithMergedSubmission(submission *PresentationSubmission) MatchOption {
 }
 
 // WithMergedSubmissionMap provides a presentation submission that's external to the Presentations being matched,
-// which contains the descriptor mapping for each Presentation. This submission is expected to be in the
+// which contains the descriptor mapping for each W3CPresentation. This submission is expected to be in the
 // map[string]interface{} format used by json.Unmarshal.
 //
-// If there are multiple Presentations, this merged submission should use the Presentation array as the JSON Path root
+// If there are multiple Presentations, this merged submission should use the W3CPresentation array as the JSON Path root
 // when referencing the contained Presentations and the Credentials within.
 func WithMergedSubmissionMap(submissionMap map[string]interface{}) MatchOption {
 	return func(m *MatchOptions) {
@@ -112,7 +113,7 @@ func WithMergedSubmissionMap(submissionMap map[string]interface{}) MatchOption {
 }
 
 // Match returns the credentials matched against the InputDescriptors ids.
-func (pd *PresentationDefinition) Match(vpList []*verifiable.Presentation,
+func (pd *PresentationDefinition) Match(vpList []verifiable.Presentation,
 	contextLoader ld.DocumentLoader, options ...MatchOption) ([]*MatchValue, error) {
 	opts := &MatchOptions{}
 
@@ -135,7 +136,7 @@ func (pd *PresentationDefinition) Match(vpList []*verifiable.Presentation,
 
 func getMatchedCreds( //nolint:gocyclo,funlen
 	pd *PresentationDefinition,
-	vpList []*verifiable.Presentation,
+	vpList []verifiable.Presentation,
 	contextLoader ld.DocumentLoader,
 	opts *MatchOptions,
 ) ([]*MatchValue, error) {
@@ -163,9 +164,11 @@ func getMatchedCreds( //nolint:gocyclo,funlen
 	rawVPs := make([]interface{}, len(vpList))
 
 	for vpIdx, vp := range vpList {
-		err := checkJSONLDContextType(vp)
-		if err != nil {
-			return nil, err
+		if w3cvp, ok := vp.(*verifiable.W3CPresentation); ok {
+			err := checkJSONLDContextType(w3cvp)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		typelessVP, err := getTypelessVP(vp)
@@ -240,7 +243,7 @@ func getMatchedCreds( //nolint:gocyclo,funlen
 			}
 
 			result = append(result, &MatchValue{
-				PresentationID: vp.ID,
+				PresentationID: vp.ID(),
 				Credential:     filtered[0].credential,
 				DescriptorID:   mapping.ID,
 			})
@@ -277,16 +280,30 @@ func selectVC(typelessVerifiable interface{},
 			continue
 		}
 
-		var credBits []byte
+		if mapping.Format == FormatMsoMdoc {
+			credString, ok := typelessVerifiable.(string)
+			if !ok {
+				return nil, fmt.Errorf("failed to cast typelessVerifiable to []byte")
+			}
 
-		credBits, err = json.Marshal(typelessVerifiable)
-		if err != nil {
-			return nil, fmt.Errorf("failed to marshal credential: %w", err)
-		}
+			var vp *verifiable.MDocPresentation
+			vp, err = verifiable.ParseMDocPresentation([]byte(credString))
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse mdoc presentation: %w", err)
+			}
+			vc = vp.Credentials()[0]
+		} else {
+			var credBits []byte
 
-		vc, err = verifiable.ParseCredential(credBits, opts.CredentialOptions...)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse credential: %w", err)
+			credBits, err = json.Marshal(typelessVerifiable)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal credential: %w", err)
+			}
+
+			vc, err = verifiable.ParseCredential(credBits, opts.CredentialOptions...)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse w3c credential: %w", err)
+			}
 		}
 
 		break
@@ -328,7 +345,7 @@ func (pd *PresentationDefinition) inputDescriptor(id string) *InputDescriptor {
 	return nil
 }
 
-func checkJSONLDContextType(vp *verifiable.Presentation) error {
+func checkJSONLDContextType(vp *verifiable.W3CPresentation) error {
 	if !stringsContain(vp.Context, PresentationSubmissionJSONLDContextIRI) &&
 		!stringsContain(vp.Context, CredentialApplicationJSONLDContextIRI) {
 		return fmt.Errorf("input verifiable presentation must have json-ld context %s or %s",
@@ -344,8 +361,8 @@ func checkJSONLDContextType(vp *verifiable.Presentation) error {
 	return nil
 }
 
-func parseDescriptorMap(vp *verifiable.Presentation) ([]*InputDescriptorMapping, error) {
-	untypedSubmission, ok := vp.CustomFields[submissionProperty]
+func parseDescriptorMap(vp verifiable.Presentation) ([]*InputDescriptorMapping, error) {
+	untypedSubmission, ok := vp.CustomFields()[submissionProperty]
 	if !ok {
 		return nil, fmt.Errorf("missing '%s' on verifiable presentation", submissionProperty)
 	}
@@ -458,7 +475,7 @@ func rootIndex(jsonPathStr string) int {
 
 // [The Input Descriptor Mapping Object] MUST include a path property, and its value MUST be a JSONPath
 // string expression that selects the credential to be submit in relation to the identified Input Descriptor
-// identified, when executed against the top-level of the object the Presentation Submission is embedded within.
+// identified, when executed against the top-level of the object the W3CPresentation Submission is embedded within.
 func selectByPath(builder gval.Language, vp interface{}, jsonPath string) (interface{}, error) {
 	path, err := builder.NewEvaluable(jsonPath)
 	if err != nil {
@@ -483,29 +500,36 @@ func stringsContain(s []string, val string) bool {
 	return false
 }
 
-func getTypelessVP(vp *verifiable.Presentation) (interface{}, error) {
-	switch {
-	case vp.IsJWT():
-		token, _, parseErr := jwt.Parse(vp.JWT)
-		if parseErr != nil {
-			return nil, fmt.Errorf("failed to parse vp.JWT: %w", parseErr)
+func getTypelessVP(vp verifiable.Presentation) (interface{}, error) {
+	switch cvp := vp.(type) {
+	case *verifiable.W3CPresentation:
+		switch {
+		case cvp.IsJWT():
+			token, _, parseErr := jwt.Parse(cvp.JWT)
+			if parseErr != nil {
+				return nil, fmt.Errorf("failed to parse vp.JWT: %w", parseErr)
+			}
+
+			return token.Payload, nil
+		case cvp.IsCWT():
+			return cvp.CWT.VPMap, nil
+		default:
+			b, marshalErr := cvp.MarshalJSON()
+			if marshalErr != nil {
+				return nil, fmt.Errorf("failed to marshal vp: %w", marshalErr)
+			}
+
+			typelessVP := interface{}(nil)
+
+			if err := json.Unmarshal(b, &typelessVP); err != nil {
+				return nil, fmt.Errorf("failed to unmarshal vp: %w", err)
+			}
+
+			return typelessVP, nil
 		}
-
-		return token.Payload, nil
-	case vp.IsCWT():
-		return vp.CWT.VPMap, nil
-	default:
-		b, marshalErr := vp.MarshalJSON()
-		if marshalErr != nil {
-			return nil, fmt.Errorf("failed to marshal vp: %w", marshalErr)
-		}
-
-		typelessVP := interface{}(nil)
-
-		if err := json.Unmarshal(b, &typelessVP); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal vp: %w", err)
-		}
-
-		return typelessVP, nil
+	case *verifiable.MDocPresentation:
+		return cvp.B64(), nil
 	}
+
+	return nil, errors.New("unsupported verifiable presentation type")
 }

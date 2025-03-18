@@ -229,11 +229,11 @@ var validPresentationWithJWTVC []byte //nolint:gochecknoglobals
 var presentationSubmissionV1 []byte //nolint:gochecknoglobals
 
 func TestParseCwtPresentation(t *testing.T) {
-	t.Run("creates a new Verifiable Presentation with custom/additional fields", func(t *testing.T) {
-		verify := func(t *testing.T, vp *Presentation) {
-			require.Len(t, vp.CustomFields, 1)
-			require.Len(t, vp.CustomFields["presentation_submission"], 1)
-			submission, ok := vp.CustomFields["presentation_submission"].(map[string]interface{})
+	t.Run("creates a new Verifiable W3CPresentation with custom/additional fields", func(t *testing.T) {
+		verify := func(t *testing.T, vp *W3CPresentation) {
+			require.Len(t, vp.CustomFields(), 1)
+			require.Len(t, vp.CustomFields()["presentation_submission"], 1)
+			submission, ok := vp.CustomFields()["presentation_submission"].(map[string]interface{})
 			require.True(t, ok)
 			require.Len(t, submission, 1)
 			descrMap, ok := submission["descriptor_map"].([]interface{})
@@ -246,7 +246,7 @@ func TestParseCwtPresentation(t *testing.T) {
 			Content: presentationSubmissionV1,
 		})
 
-		vp, err := ParsePresentation([]byte(validPresentationWithCustomFields),
+		vp, err := ParseW3CPresentation([]byte(validPresentationWithCustomFields),
 			WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
@@ -257,7 +257,7 @@ func TestParseCwtPresentation(t *testing.T) {
 		require.NoError(t, e)
 		require.NotEmpty(t, b)
 
-		vp, err = ParsePresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
+		vp, err = ParseW3CPresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
@@ -266,7 +266,7 @@ func TestParseCwtPresentation(t *testing.T) {
 }
 
 func TestParsePresentation(t *testing.T) {
-	t.Run("creates a new Verifiable Presentation from JSON with valid structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with valid structure", func(t *testing.T) {
 		vp, err := newTestPresentation(t, []byte(validPresentation), WithPresDisabledProofCheck(),
 			WithPresStrictValidation())
 		require.NoError(t, err)
@@ -280,7 +280,7 @@ func TestParsePresentation(t *testing.T) {
 		}, vp.Context)
 
 		// check id
-		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.ID)
+		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.id)
 
 		// check type
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
@@ -293,7 +293,7 @@ func TestParsePresentation(t *testing.T) {
 		require.Equal(t, "did:example:ebfeb1f712ebc6f1c276e12ec21", vp.Holder)
 	})
 
-	t.Run("creates a new Verifiable Presentation from valid JSON without credentials", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from valid JSON without credentials", func(t *testing.T) {
 		vp, err := newTestPresentation(t, []byte(presentationWithoutCredentials),
 			WithPresDisabledProofCheck(),
 			WithPresStrictValidation())
@@ -308,7 +308,7 @@ func TestParsePresentation(t *testing.T) {
 		}, vp.Context)
 
 		// check id
-		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.ID)
+		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.id)
 
 		// check type
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
@@ -327,11 +327,11 @@ func TestParsePresentation(t *testing.T) {
 		require.IsType(t, nil, rp[vpFldCredential])
 	})
 
-	t.Run("creates a new Verifiable Presentation with custom/additional fields", func(t *testing.T) {
-		verify := func(t *testing.T, vp *Presentation) {
-			require.Len(t, vp.CustomFields, 1)
-			require.Len(t, vp.CustomFields["presentation_submission"], 1)
-			submission, ok := vp.CustomFields["presentation_submission"].(map[string]interface{})
+	t.Run("creates a new Verifiable W3CPresentation with custom/additional fields", func(t *testing.T) {
+		verify := func(t *testing.T, vp *W3CPresentation) {
+			require.Len(t, vp.CustomFields(), 1)
+			require.Len(t, vp.CustomFields()["presentation_submission"], 1)
+			submission, ok := vp.CustomFields()["presentation_submission"].(map[string]interface{})
 			require.True(t, ok)
 			require.Len(t, submission, 1)
 			descrMap, ok := submission["descriptor_map"].([]interface{})
@@ -344,7 +344,7 @@ func TestParsePresentation(t *testing.T) {
 			Content: presentationSubmissionV1,
 		})
 
-		vp, err := ParsePresentation([]byte(validPresentationWithCustomFields),
+		vp, err := ParseW3CPresentation([]byte(validPresentationWithCustomFields),
 			WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
@@ -355,21 +355,21 @@ func TestParsePresentation(t *testing.T) {
 		require.NoError(t, e)
 		require.NotEmpty(t, b)
 
-		vp, err = ParsePresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
+		vp, err = ParseW3CPresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 		verify(t, vp)
 	})
 
-	t.Run("creates a new Verifiable Presentation from JSON with invalid structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with invalid structure", func(t *testing.T) {
 		emptyJSONDoc := "{}"
 		vp, err := newTestPresentation(t, []byte(emptyJSONDoc))
 		require.Error(t, err)
 		require.Nil(t, vp)
 	})
 
-	t.Run("fails to create a new Verifiable Presentation from non-JSON doc", func(t *testing.T) {
+	t.Run("fails to create a new Verifiable W3CPresentation from non-JSON doc", func(t *testing.T) {
 		vp, err := newTestPresentation(t, []byte("non json"))
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "JSON unmarshalling of verifiable presentation")
@@ -442,14 +442,14 @@ func TestParsePresentation(t *testing.T) {
 			Content: presentationSubmissionV1,
 		})
 
-		vp, err := ParsePresentation(validPresentationWithJWTVC, WithPresDisabledProofCheck(),
+		vp, err := ParseW3CPresentation(validPresentationWithJWTVC, WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 	})
 
 	t.Run("parsing VP with a JWT VC with required JSON-LD checks succeeds", func(t *testing.T) {
-		vp, err := ParsePresentation(validPresentationWithJWTVC, WithPresDisabledProofCheck(),
+		vp, err := ParseW3CPresentation(validPresentationWithJWTVC, WithPresDisabledProofCheck(),
 			WithDisabledJSONLDChecks())
 		require.NoError(t, err)
 		require.NotNil(t, vp)
@@ -467,7 +467,7 @@ func TestParsePresentation(t *testing.T) {
 
 			raw["type"] = map[string]string{}
 
-			_, err = newPresentation(raw, &presentationOpts{})
+			_, err = newW3CPresentation(raw, &presentationOpts{})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "presentation types")
 		})
@@ -478,7 +478,7 @@ func TestParsePresentation(t *testing.T) {
 
 			raw["@context"] = map[string]string{}
 
-			_, err = newPresentation(raw, &presentationOpts{})
+			_, err = newW3CPresentation(raw, &presentationOpts{})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "presentation contexts")
 		})
@@ -489,7 +489,7 @@ func TestParsePresentation(t *testing.T) {
 
 			raw["proof"] = map[string]string{}
 
-			_, err = newPresentation(raw, &presentationOpts{})
+			_, err = newW3CPresentation(raw, &presentationOpts{})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "presentation proof")
 		})
@@ -500,7 +500,7 @@ func TestParsePresentation(t *testing.T) {
 
 			raw["id"] = map[string]string{}
 
-			_, err = newPresentation(raw, &presentationOpts{})
+			_, err = newW3CPresentation(raw, &presentationOpts{})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "presentation id")
 		})
@@ -511,7 +511,7 @@ func TestParsePresentation(t *testing.T) {
 
 			raw["holder"] = map[string]string{}
 
-			_, err = newPresentation(raw, &presentationOpts{})
+			_, err = newW3CPresentation(raw, &presentationOpts{})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "presentation holder")
 		})
@@ -519,7 +519,7 @@ func TestParsePresentation(t *testing.T) {
 }
 
 func TestV2ParsePresentation(t *testing.T) {
-	t.Run("creates a new Verifiable Presentation from JSON with valid structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with valid structure", func(t *testing.T) {
 		vp, err := newTestPresentation(t, []byte(v2ValidPresentation), WithPresDisabledProofCheck(),
 			WithPresStrictValidation())
 		require.NoError(t, err)
@@ -532,7 +532,7 @@ func TestV2ParsePresentation(t *testing.T) {
 		}, vp.Context)
 
 		// check id
-		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.ID)
+		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.id)
 
 		// check type
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
@@ -545,7 +545,7 @@ func TestV2ParsePresentation(t *testing.T) {
 		require.Equal(t, "did:example:ebfeb1f712ebc6f1c276e12ec21", vp.Holder)
 	})
 
-	t.Run("creates a new Verifiable Presentation from valid JSON without credentials", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from valid JSON without credentials", func(t *testing.T) {
 		vp, err := newTestPresentation(t, []byte(v2PresentationWithoutCredentials),
 			WithPresDisabledProofCheck(),
 			WithPresStrictValidation())
@@ -559,7 +559,7 @@ func TestV2ParsePresentation(t *testing.T) {
 		}, vp.Context)
 
 		// check id
-		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.ID)
+		require.Equal(t, "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5", vp.id)
 
 		// check type
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
@@ -578,11 +578,11 @@ func TestV2ParsePresentation(t *testing.T) {
 		require.IsType(t, nil, rp[vpFldCredential])
 	})
 
-	t.Run("creates a new Verifiable Presentation with custom/additional fields", func(t *testing.T) {
-		verify := func(t *testing.T, vp *Presentation) {
-			require.Len(t, vp.CustomFields, 1)
-			require.Len(t, vp.CustomFields["presentation_submission"], 1)
-			submission, ok := vp.CustomFields["presentation_submission"].(map[string]interface{})
+	t.Run("creates a new Verifiable W3CPresentation with custom/additional fields", func(t *testing.T) {
+		verify := func(t *testing.T, vp *W3CPresentation) {
+			require.Len(t, vp.CustomFields(), 1)
+			require.Len(t, vp.CustomFields()["presentation_submission"], 1)
+			submission, ok := vp.CustomFields()["presentation_submission"].(map[string]interface{})
 			require.True(t, ok)
 			require.Len(t, submission, 1)
 			descrMap, ok := submission["descriptor_map"].([]interface{})
@@ -595,7 +595,7 @@ func TestV2ParsePresentation(t *testing.T) {
 			Content: presentationSubmissionV1,
 		})
 
-		vp, err := ParsePresentation([]byte(v2ValidPresentationWithCustomFields),
+		vp, err := ParseW3CPresentation([]byte(v2ValidPresentationWithCustomFields),
 			WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
@@ -606,7 +606,7 @@ func TestV2ParsePresentation(t *testing.T) {
 		require.NoError(t, e)
 		require.NotEmpty(t, b)
 
-		vp, err = ParsePresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
+		vp, err = ParseW3CPresentation(b, WithPresStrictValidation(), WithPresDisabledProofCheck(),
 			WithPresJSONLDDocumentLoader(loader))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
@@ -765,7 +765,7 @@ func TestPresentation_MarshalJSON(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, vp2)
 
-	// verify that verifiable presentations created by ParsePresentation() and MarshalJSON() matches
+	// verify that verifiable presentations created by ParseW3CPresentation() and MarshalJSON() matches
 	require.Equal(t, vp, vp2)
 }
 
@@ -778,7 +778,7 @@ func TestNewPresentation(t *testing.T) {
 	r.NoError(err)
 
 	// Pass Credential struct pointer
-	vp, err := NewPresentation(WithCredentials(vc))
+	vp, err := NewW3CPresentation(WithCredentials(vc))
 	r.NoError(err)
 	r.Len(vp.credentials, 1)
 	r.Equal(vc, vp.credentials[0])
@@ -789,7 +789,7 @@ func TestNewPresentation(t *testing.T) {
 	// Pass VC marshalled into unsecured JWT
 
 	// set multiple credentials
-	vp, err = NewPresentation(WithCredentials(vc, vc), WithCredentials(vc))
+	vp, err = NewW3CPresentation(WithCredentials(vc, vc), WithCredentials(vc))
 	r.NoError(err)
 	r.Len(vp.credentials, 3)
 	r.Equal(vc, vp.credentials[0])
@@ -850,7 +850,7 @@ func TestParseUnverifiedPresentation(t *testing.T) {
 	require.NoError(t, err)
 
 	// happy path
-	vp, err := ParsePresentation([]byte(validPresentation), WithPresDisabledProofCheck(),
+	vp, err := ParseW3CPresentation([]byte(validPresentation), WithPresDisabledProofCheck(),
 		WithPresJSONLDDocumentLoader(loader))
 	require.NoError(t, err)
 	require.NotNil(t, vp)
@@ -865,13 +865,13 @@ func TestParseUnverifiedPresentation(t *testing.T) {
 	vpWithoutProofBytes, err := json.Marshal(vpJSON)
 	require.NoError(t, err)
 
-	vp, err = ParsePresentation(vpWithoutProofBytes, WithPresDisabledProofCheck(),
+	vp, err = ParseW3CPresentation(vpWithoutProofBytes, WithPresDisabledProofCheck(),
 		WithPresJSONLDDocumentLoader(loader))
 	require.NoError(t, err)
 	require.NotNil(t, vp)
 
 	// VP decoding error
-	vp, err = ParsePresentation([]byte("invalid"), WithPresDisabledProofCheck(),
+	vp, err = ParseW3CPresentation([]byte("invalid"), WithPresDisabledProofCheck(),
 		WithPresJSONLDDocumentLoader(loader))
 	require.Error(t, err)
 	require.Nil(t, vp)
@@ -892,11 +892,11 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 		jwtVC, err := vc.CreateSignedJWTVC(false, RS256, issuerSigner, pubKeyID)
 		require.NoError(t, err)
 
-		vp, err := NewPresentation(WithCredentials(jwtVC))
+		vp, err := NewW3CPresentation(WithCredentials(jwtVC))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 		require.Equal(t, []string{"https://www.w3.org/2018/credentials/v1"}, vp.Context)
-		require.Empty(t, vp.ID)
+		require.Empty(t, vp.id)
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
 		require.Len(t, vp.Credentials(), 1)
 
@@ -918,7 +918,7 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 		require.NotEmpty(t, jwtHeader)
 		require.NotEmpty(t, vcDataDecoded)
 
-		vp2, err := ParsePresentation(vpJWTBytes,
+		vp2, err := ParseW3CPresentation(vpJWTBytes,
 			WithPresProofChecker(proofChecker),
 			WithPresStrictValidation(),
 			WithPresJSONLDDocumentLoader(createTestDocumentLoader(t)),
@@ -942,11 +942,11 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 		jwtVC, err := vc.CreateSignedJWTVC(false, RS256, issuerSigner, pubKeyID)
 		require.NoError(t, err)
 
-		vp, err := NewPresentation(WithBaseContext(V2ContextURI), WithCredentials(jwtVC))
+		vp, err := NewW3CPresentation(WithBaseContext(V2ContextURI), WithCredentials(jwtVC))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 		require.Equal(t, []string{"https://www.w3.org/ns/credentials/v2"}, vp.Context)
-		require.Empty(t, vp.ID)
+		require.Empty(t, vp.id)
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
 		require.Len(t, vp.Credentials(), 1)
 
@@ -965,7 +965,7 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 
 		validateEnvelopedVP(t, vpJWTBytes, VPMediaTypeJWT)
 
-		vp2, err := ParsePresentation(vpJWTBytes,
+		vp2, err := ParseW3CPresentation(vpJWTBytes,
 			WithPresProofChecker(proofChecker),
 			WithPresStrictValidation(),
 			WithPresJSONLDDocumentLoader(createTestDocumentLoader(t)),
@@ -989,11 +989,11 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 		cwtVC, err := vc.CreateSignedCOSEVC(cose.AlgorithmRS256, issuerSigner, pubKeyID)
 		require.NoError(t, err)
 
-		vp, err := NewPresentation(WithBaseContext(V2ContextURI), WithCredentials(cwtVC))
+		vp, err := NewW3CPresentation(WithBaseContext(V2ContextURI), WithCredentials(cwtVC))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 		require.Equal(t, []string{"https://www.w3.org/ns/credentials/v2"}, vp.Context)
-		require.Empty(t, vp.ID)
+		require.Empty(t, vp.id)
 		require.Equal(t, []string{"VerifiablePresentation"}, vp.Type)
 		require.Len(t, vp.Credentials(), 1)
 
@@ -1012,7 +1012,7 @@ func TestPresentation_MarshalAndParseVP(t *testing.T) {
 
 		validateEnvelopedVP(t, vpCWTBytes, VPMediaTypeCOSE)
 
-		vp2, err := ParsePresentation(vpCWTBytes,
+		vp2, err := ParseW3CPresentation(vpCWTBytes,
 			WithPresProofChecker(proofChecker),
 			WithPresStrictValidation(),
 			WithPresJSONLDDocumentLoader(createTestDocumentLoader(t)),

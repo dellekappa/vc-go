@@ -100,7 +100,7 @@ func TestUnmarshalPresJWSClaims(t *testing.T) {
 	})
 }
 
-func createCredJWS(t *testing.T, vp *Presentation, signer *creator.ProofCreator) string {
+func createCredJWS(t *testing.T, vp *W3CPresentation, signer *creator.ProofCreator) string {
 	claims, err := newJWTPresClaims(vp, []string{}, false)
 	require.NoError(t, err)
 	require.NotNil(t, claims)

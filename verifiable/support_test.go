@@ -59,7 +59,7 @@ func (vc *Credential) byteJSON(t *testing.T) []byte {
 	return bytes
 }
 
-func (vp *Presentation) stringJSON(t *testing.T) string {
+func (vp *W3CPresentation) stringJSON(t *testing.T) string {
 	bytes, err := json.Marshal(vp)
 	require.NoError(t, err)
 
@@ -157,9 +157,9 @@ func parseTestCredential(t *testing.T, vcData []byte, opts ...CredentialOpt) (*C
 		append([]CredentialOpt{WithJSONLDDocumentLoader(createTestDocumentLoader(t))}, opts...)...)
 }
 
-func newTestPresentation(t *testing.T, vpData []byte, opts ...PresentationOpt) (*Presentation, error) {
+func newTestPresentation(t *testing.T, vpData []byte, opts ...PresentationOpt) (*W3CPresentation, error) {
 	t.Helper()
 
-	return ParsePresentation(vpData,
+	return ParseW3CPresentation(vpData,
 		append([]PresentationOpt{WithPresJSONLDDocumentLoader(createTestDocumentLoader(t))}, opts...)...)
 }

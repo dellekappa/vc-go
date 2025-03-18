@@ -1,7 +1,10 @@
 package mdoc
 
 import (
+	"bytes"
+	"crypto"
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
@@ -32,6 +35,7 @@ func (ins IssuerNameSpaces) Claims() (Claims, error) {
 				return nil, err
 			}
 
+			claim.nameSpace = nameSpace
 			claims[i] = claim
 		}
 		namespacedClaims[nameSpace] = claims
@@ -119,10 +123,11 @@ func NewIssuerSigned(signed *cose.UntaggedSign1Message, claims Claims) (IssuerSi
 type Claims map[NameSpace][]Claim
 
 type Claim struct {
-	DigestID          uint                  `cbor:"digestID"`
 	Random            []byte                `cbor:"random"`
-	ElementIdentifier DataElementIdentifier `cbor:"elementIdentifier"`
+	DigestID          uint                  `cbor:"digestID"`
 	ElementValue      DataElementValue      `cbor:"elementValue"`
+	ElementIdentifier DataElementIdentifier `cbor:"elementIdentifier"`
+	nameSpace         NameSpace
 }
 
 func newClaims(data map[string]map[string]interface{}) (Claims, error) {
@@ -157,6 +162,7 @@ func newClaims(data map[string]map[string]interface{}) (Claims, error) {
 				Random:            salt,
 				ElementIdentifier: DataElementIdentifier(k),
 				ElementValue:      v,
+				nameSpace:         NameSpace(ns),
 			}
 
 			//cborItem, err := cbor.Marshal(&item)
@@ -177,4 +183,46 @@ func newClaims(data map[string]map[string]interface{}) (Claims, error) {
 	}
 
 	return namespaces, nil
+}
+
+func (c *Claim) NameSpace() NameSpace {
+	return c.nameSpace
+}
+
+func (c *Claim) CheckDigest(mso *MobileSecurityObject) error {
+	if mso == nil {
+		return errors.New("mso object is nil")
+	}
+
+	digests, found := mso.ValueDigests[c.nameSpace]
+	if !found {
+		return fmt.Errorf("mso does not contain digests for namespace '%s'", c.nameSpace)
+	}
+
+	digest, found := digests[DigestID(c.DigestID)]
+	if !found {
+		return fmt.Errorf("mso does not contain digest '%d' for namespace '%s'", c.DigestID, c.nameSpace)
+	}
+
+	hashAlg := mso.DigestAlgorithm
+	var hash crypto.Hash
+	switch hashAlg {
+	case "SHA-256":
+		hash = crypto.SHA256
+	case "SHA-384":
+		hash = crypto.SHA384
+	case "SHA-512":
+		hash = crypto.SHA512
+	}
+
+	hashed, err := digestValue(*c, hash)
+	if err != nil {
+		return fmt.Errorf("cannot hash claim '%s' for digest check: %w", c.ElementIdentifier, err)
+	}
+
+	if !bytes.Equal(digest, hashed) {
+		return fmt.Errorf("invalid claim '%s'. The digest value doesn't match", c.ElementIdentifier)
+	}
+
+	return nil
 }

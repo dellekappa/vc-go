@@ -147,7 +147,7 @@ func Test_DataIntegrity_SignVerify(t *testing.T) {
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "add data integrity proof to VC")
 
-			vp := &Presentation{
+			vp := &W3CPresentation{
 				Proofs: []Proof{
 					{
 						"foo": make(chan int),
@@ -167,7 +167,7 @@ func Test_DataIntegrity_SignVerify(t *testing.T) {
 			require.Error(t, err)
 			require.Contains(t, err.Error(), "unsupported cryptographic suite")
 
-			vp := &Presentation{}
+			vp := &W3CPresentation{}
 
 			err = vp.AddDataIntegrityProof(&DataIntegrityProofContext{
 				Created: &time.Time{},

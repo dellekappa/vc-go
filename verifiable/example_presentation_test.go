@@ -75,7 +75,7 @@ func ExamplePresentation_JWTClaims() {
 `
 
 	// The Holder wants to send the presentation to the Verifier in JWS.
-	vp, err := verifiable.ParsePresentation([]byte(vpStrFromWallet), verifiable.WithPresDisabledProofCheck(),
+	vp, err := verifiable.ParseW3CPresentation([]byte(vpStrFromWallet), verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(getJSONLDDocumentLoader()))
 	if err != nil {
 		panic(fmt.Errorf("failed to decode VP JSON: %w", err))
@@ -140,12 +140,14 @@ func ExamplePresentation() {
 		panic(fmt.Errorf("failed to decode VC JSON: %w", err))
 	}
 
-	vp, err := verifiable.NewPresentation(verifiable.WithCredentials(vc))
+	vp, err := verifiable.NewW3CPresentation(
+		verifiable.WithID("urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5"),
+		verifiable.WithCredentials(vc),
+	)
 	if err != nil {
 		panic(fmt.Errorf("failed to build VP from VC: %w", err))
 	}
 
-	vp.ID = "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c5"
 	vp.Holder = "did:example:ebfeb1f712ebc6f1c276e12ec21"
 
 	aud := []string{"did:example:4a57546973436f6f6c4a4a57573"}
@@ -237,13 +239,16 @@ func ExamplePresentation_two() {
 		panic(fmt.Errorf("failed to decode VC JWT: %w", err))
 	}
 
-	vp, err := verifiable.NewPresentation(verifiable.WithCredentials(vc),
-		verifiable.WithCredentials(jwtVC), verifiable.WithCredentials(vc2))
+	vp, err := verifiable.NewW3CPresentation(
+		verifiable.WithID("urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"),
+		verifiable.WithCredentials(vc),
+		verifiable.WithCredentials(jwtVC),
+		verifiable.WithCredentials(vc2),
+	)
 	if err != nil {
 		panic(fmt.Errorf("failed to set credentials of VP: %w", err))
 	}
 
-	vp.ID = "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"
 	vp.Holder = "did:example:ebfeb1f712ebc6f1c276e12ec21"
 
 	vpBytes, err := json.MarshalIndent(vp, "", "\t")
@@ -345,15 +350,17 @@ func ExamplePresentation_MarshalJSON() {
 		"referenceNumber": 83294847,
 	})
 
-	vp, err := verifiable.NewPresentation(verifiable.WithCredentials(vc))
+	vp, err := verifiable.NewW3CPresentation(
+		verifiable.WithID("urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"),
+		verifiable.WithCredentials(vc),
+	)
 	if err != nil {
 		panic(fmt.Errorf("failed to set credentials of VP: %w", err))
 	}
 
-	vp.ID = "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"
 	vp.Holder = "did:example:ebfeb1f712ebc6f1c276e12ec21"
 
-	// json.MarshalIndent() calls Presentation.MarshalJSON()
+	// json.MarshalIndent() calls W3CPresentation.MarshalJSON()
 	vpJSON, err := json.MarshalIndent(vp, "", "\t")
 	if err != nil {
 		panic(fmt.Errorf("failed to marshal VP to JSON: %w", err))
@@ -443,12 +450,14 @@ func ExamplePresentation_MarshalledCredentials() {
 		panic(fmt.Errorf("failed to set credentials of VP: %w", err))
 	}
 
-	vp, err := verifiable.NewPresentation(verifiable.WithCredentials(jwtVC))
+	vp, err := verifiable.NewW3CPresentation(
+		verifiable.WithID("urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"),
+		verifiable.WithCredentials(jwtVC),
+	)
 	if err != nil {
 		panic(fmt.Errorf("failed to set credentials of VP: %w", err))
 	}
 
-	vp.ID = "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c"
 	vp.Holder = "did:example:ebfeb1f712ebc6f1c276e12ec21"
 
 	// Marshal VP to JWS as well.
@@ -466,7 +475,7 @@ func ExamplePresentation_MarshalledCredentials() {
 	// Decode VP from JWS.
 	// Note that VC-s inside will be decoded as well. If they are JWS, their signature is verified
 	// and thus we need to make sure the public key fetcher can retrieve the public key.
-	vp, err = verifiable.ParsePresentation(
+	vp, err = verifiable.ParseW3CPresentation(
 		[]byte(vpJWS), verifiable.WithPresProofChecker(proofVerifier), verifiable.WithPresJSONLDDocumentLoader(getJSONLDDocumentLoader()))
 	if err != nil {
 		panic(fmt.Errorf("failed to decode VP JWS: %w", err))
@@ -569,13 +578,15 @@ func ExamplePresentation_AddLinkedDataProof() {
 		panic(fmt.Errorf("failed to decode VC JSON: %w", err))
 	}
 
-	vpToVerify, err := verifiable.NewPresentation(verifiable.WithCredentials(vcFromHolderWallet))
+	vpToVerify, err := verifiable.NewW3CPresentation(
+		verifiable.WithID("urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c6"),
+		verifiable.WithCredentials(vcFromHolderWallet),
+	)
 	if err != nil {
 		panic(fmt.Errorf("failed to build VP from VC: %w", err))
 	}
 
 	vpToVerify.Holder = "did:example:ebfeb1f712ebc6f1c276e12ec22"
-	vpToVerify.ID = "urn:uuid:3978344f-8596-4c3a-a978-8fcaba3903c6"
 
 	err = vpToVerify.AddLinkedDataProof(&verifiable.LinkedDataProofContext{
 		Created:                 &issued,
@@ -594,7 +605,7 @@ func ExamplePresentation_AddLinkedDataProof() {
 		panic(fmt.Errorf("failed to marshal VP to JSON: %w", err))
 	}
 
-	vp, err := verifiable.ParsePresentation(vpJSONWithProof,
+	vp, err := verifiable.ParseW3CPresentation(vpJSONWithProof,
 		verifiable.WithPresProofChecker(proofVerifier),
 		verifiable.WithPresJSONLDDocumentLoader(getJSONLDDocumentLoader()))
 	if err != nil {

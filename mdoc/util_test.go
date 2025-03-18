@@ -1,6 +1,7 @@
 package mdoc
 
 import (
+	"encoding/base64"
 	"encoding/hex"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/google/go-cmp/cmp"
@@ -30,6 +31,17 @@ func decodeHex(t *testing.T, encoded string) []byte {
 	t.Helper()
 
 	decoded, err := hex.DecodeString(encoded)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return decoded
+}
+
+func decodeB64Url(t *testing.T, encoded string) []byte {
+	t.Helper()
+
+	decoded, err := base64.URLEncoding.DecodeString(encoded)
 	if err != nil {
 		t.Fatal(err)
 	}
