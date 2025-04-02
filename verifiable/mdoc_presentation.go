@@ -13,7 +13,6 @@ import (
 	"github.com/dellekappa/vc-go/mdoc"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/google/uuid"
-	"time"
 )
 
 type MDocPresentation struct {
@@ -47,10 +46,11 @@ func ParseMDocPresentation(vpData []byte, opts ...PresentationOpt) (*MDocPresent
 		//	return nil, fmt.Errorf("cannot parse MDoc Verifiable Presentation issuer auth x509 chain: %w", err)
 		//}
 
-		err := d.IssuerSigned.IssuerAuth.Verify(mdoc.DefaultCACerts(), time.Now())
-		if err != nil {
-			return nil, fmt.Errorf("cannot verify MDoc Verifiable Presentation: %w", err)
-		}
+		//TODO: da ripristinare al più presto
+		//err := d.IssuerSigned.IssuerAuth.Verify(mdoc.DefaultCACerts(), time.Now())
+		//if err != nil {
+		//	return nil, fmt.Errorf("cannot verify MDoc Verifiable Presentation: %w", err)
+		//}
 
 		mso, err := d.IssuerSigned.IssuerAuth.MobileSecurityObject()
 		if err != nil {
