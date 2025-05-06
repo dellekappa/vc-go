@@ -19,7 +19,7 @@ func WithNoProofCheck() CredentialOpt {
 	}
 }
 
-// WithPresNoProofCheck tells to skip checking of Verifiable Presentation's proofs.
+// WithPresNoProofCheck tells to skip checking of Verifiable W3CPresentation's proofs.
 func WithPresNoProofCheck() PresentationOpt {
 	return func(opts *presentationOpts) {
 		opts.disabledProofCheck = true

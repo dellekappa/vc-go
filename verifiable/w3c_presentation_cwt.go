@@ -15,7 +15,7 @@ import (
 	"github.com/dellekappa/vc-go/jwt"
 )
 
-func newCWTPresClaims(vp *Presentation, audience []string, minimizeVP bool) (*CWTPresClaims, error) {
+func newCWTPresClaims(vp *W3CPresentation, audience []string, minimizeVP bool) (*CWTPresClaims, error) {
 	jwtClaims, err := newJWTPresClaims(vp, audience, minimizeVP)
 	if err != nil {
 		return nil, err
@@ -41,13 +41,13 @@ func (c *CWTPresClaims) MarshalCWT(
 }
 
 // CreateCWTVP creates a CWT presentation from the given presentation.
-func (vp *Presentation) CreateCWTVP(
+func (vp *W3CPresentation) CreateCWTVP(
 	aud []string,
 	signatureAlg cose.Algorithm,
 	signer cwt.ProofCreator,
 	keyID string,
 	minimizeVP bool,
-) (*Presentation, error) {
+) (*W3CPresentation, error) {
 	cwtClaims, err := vp.CWTClaims(aud, minimizeVP)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create CWT claims: %w", err)
@@ -79,6 +79,6 @@ func (vp *Presentation) CreateCWTVP(
 }
 
 // IsCWT returns true is the presentation is CWT.
-func (vp *Presentation) IsCWT() bool {
+func (vp *W3CPresentation) IsCWT() bool {
 	return vp.CWT != nil && len(vp.CWT.Raw) > 0
 }

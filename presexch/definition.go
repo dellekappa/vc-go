@@ -58,6 +58,10 @@ const (
 	FormatLDPVC = "ldp_vc"
 	// FormatLDPVP presentation exchange format.
 	FormatLDPVP = "ldp_vp"
+	// FormatMsoMdoc presentation exchange format.
+	FormatMsoMdoc = "mso_mdoc"
+	// FormatSdJwt presentation exchange format.
+	FormatSdJwt = "dc+sd-jwt"
 )
 
 var errPathNotApplicable = errors.New("path not applicable")
@@ -91,11 +95,17 @@ type Format struct {
 
 	CwtVC *CwtType `json:"cwt_vc,omitempty"`
 	CwtVP *CwtType `json:"cwt_vp,omitempty"`
+
+	MsoMdoc *MsoMdocType `json:"mso_mdoc,omitempty"`
+
+	SdJwt *SdJwtType `json:"dc+sd-jwt,omitempty"`
 }
 
 func (f *Format) notNil() bool {
 	return f != nil &&
-		(f.Jwt != nil || f.JwtVC != nil || f.JwtVP != nil || f.Ldp != nil || f.LdpVC != nil || f.LdpVP != nil)
+		(f.Jwt != nil || f.JwtVC != nil || f.JwtVP != nil ||
+			f.Ldp != nil || f.LdpVC != nil || f.LdpVP != nil ||
+			f.MsoMdoc != nil || f.SdJwt != nil)
 }
 
 // CwtType contains alg.
@@ -113,13 +123,24 @@ type LdpType struct {
 	ProofType []string `json:"proof_type,omitempty"`
 }
 
+// MsoMdocType contains alg.
+type MsoMdocType struct {
+	Alg []string `json:"alg,omitempty"`
+}
+
+// SdJwtType contains alg.
+type SdJwtType struct {
+	SdAlg []string `json:"sd-jwt_alg_values,omitempty"`
+	KbAlg []string `json:"kb-jwt_alg_values,omitempty"`
+}
+
 // PresentationDefinition presentation definitions (https://identity.foundation/presentation-exchange/).
 type PresentationDefinition struct {
 	// ID unique resource identifier.
 	ID string `json:"id,omitempty"`
-	// Name human-friendly name that describes what the Presentation Definition pertains to.
+	// Name human-friendly name that describes what the W3CPresentation Definition pertains to.
 	Name string `json:"name,omitempty"`
-	// Purpose describes the purpose for which the Presentation Definition’s inputs are being requested.
+	// Purpose describes the purpose for which the W3CPresentation Definition’s inputs are being requested.
 	Purpose string `json:"purpose,omitempty"`
 	Locale  string `json:"locale,omitempty"`
 	// Format is an object with one or more properties matching the registered Claim Format Designations
@@ -133,7 +154,7 @@ type PresentationDefinition struct {
 	InputDescriptors       []*InputDescriptor       `json:"input_descriptors,omitempty"`
 }
 
-// SubmissionRequirement describes input that must be submitted via a Presentation Submission
+// SubmissionRequirement describes input that must be submitted via a W3CPresentation Submission
 // to satisfy Verifier demands.
 type SubmissionRequirement struct {
 	Name       string                   `json:"name,omitempty"`
@@ -468,7 +489,7 @@ func makeRequirement(requirements []*SubmissionRequirement, descriptors []*Input
 
 // CreateVP creates verifiable presentation.
 func (pd *PresentationDefinition) CreateVP(credentials []*verifiable.Credential,
-	documentLoader ld.DocumentLoader, opts ...MatchRequirementsOpt) (*verifiable.Presentation, error) {
+	documentLoader ld.DocumentLoader, opts ...MatchRequirementsOpt) (*verifiable.W3CPresentation, error) {
 	matchOpts := &matchRequirementsOpts{defaultVPFormat: FormatLDPVP}
 	for _, opt := range opts {
 		opt(matchOpts)
@@ -485,9 +506,7 @@ func (pd *PresentationDefinition) CreateVP(credentials []*verifiable.Credential,
 		return nil, err
 	}
 
-	vp.CustomFields = verifiable.CustomFields{
-		submissionProperty: submission,
-	}
+	vp.CustomFields()[submissionProperty] = submission
 
 	return vp, nil
 }
@@ -498,7 +517,7 @@ func (pd *PresentationDefinition) CreateVPArray(
 	credentials []*verifiable.Credential,
 	documentLoader ld.DocumentLoader,
 	opts ...MatchRequirementsOpt,
-) ([]*verifiable.Presentation, *PresentationSubmission, error) {
+) ([]*verifiable.W3CPresentation, *PresentationSubmission, error) {
 	matchOpts := &matchRequirementsOpts{defaultVPFormat: FormatLDPVP}
 	for _, opt := range opts {
 		opt(matchOpts)
@@ -510,7 +529,7 @@ func (pd *PresentationDefinition) CreateVPArray(
 		return nil, nil, err
 	}
 
-	var presentations []*verifiable.Presentation
+	var presentations []*verifiable.W3CPresentation
 
 	for _, credential := range applicableCredentials {
 		vp, e := presentation(credential)
@@ -559,13 +578,14 @@ func presentationData(
 	return applicableCredentials, submission, nil
 }
 
-func presentation(credentials ...*verifiable.Credential) (*verifiable.Presentation, error) {
+func presentation(credentials ...*verifiable.Credential) (*verifiable.W3CPresentation, error) {
 	baseContext, err := getBaseContext(credentials)
 	if err != nil {
 		return nil, fmt.Errorf("get base context: %w", err)
 	}
 
-	vp, e := verifiable.NewPresentation(
+	vp, e := verifiable.NewW3CPresentation(
+		verifiable.WithID(uuid.NewString()),
 		verifiable.WithCredentials(credentials...),
 		verifiable.WithBaseContext(baseContext),
 	)
@@ -580,8 +600,6 @@ func presentation(credentials ...*verifiable.Credential) (*verifiable.Presentati
 	if !lo.Contains(vp.Type, PresentationSubmissionJSONLDType) {
 		vp.Type = append(vp.Type, PresentationSubmissionJSONLDType)
 	}
-
-	vp.ID = uuid.NewString()
 
 	return vp, nil
 }
@@ -941,6 +959,11 @@ func filterConstraints(constraints *Constraints, creds []*verifiable.Credential)
 	}
 
 	for _, credential := range creds {
+		if credential.IsMDoc() {
+
+		} else {
+
+		}
 		credentialContents := credential.Contents()
 
 		if constraints.SubjectIsIssuer.isRequired() && !subjectIsIssuer(&credentialContents) {
@@ -1448,6 +1471,12 @@ func filterField(f *Field, credential map[string]interface{}) error {
 	var lastErr error
 
 	for _, path := range f.Path {
+		// Workaround to support single quotes in JSon Paths until https://github.com/PaesslerAG/jsonpath/issues/38
+		// is fixed
+		path = strings.ReplaceAll(path, "['", "[\"")
+		path = strings.ReplaceAll(path, "']", "\"]")
+		// End Workaround
+
 		patch, err := jsonpath.Get(path, credential)
 		if err == nil {
 			// TODO: refactor this + selective disclosure so that the accepted path for a constraint field

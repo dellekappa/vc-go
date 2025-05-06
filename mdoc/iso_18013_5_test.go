@@ -9,11 +9,15 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/asn1"
 	"encoding/hex"
 	"fmt"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/google/go-cmp/cmp"
+	"github.com/tink-crypto/tink-go/v2/signature/subtle"
+	"github.com/tink-crypto/tink-go/v2/tink"
 	"github.com/veraison/go-cose"
+	"io"
 	"math/big"
 	"testing"
 	"time"
@@ -31,6 +35,10 @@ const (
 		"0630120603551d130101ff040830060101ff020100300a06082a8648ce3d0403020349003046022100ec897f0b8a" +
 		"e51028288955031f860069659b75989af7129fa609c24299a5c787022100d088d8741f5d05b360ef6e85023e9" +
 		"0df1d31dd1e6701a88efe9a7103021f986c"
+
+	EudiUTCAHex = "3082031d308202a3a003020102021456a8e0b49a9fe21518264a9d6338bed31c21c056300a06082a8648ce3d040303305c311e301c06035504030c1550494420497373756572204341202d205554203031312d302b060355040a0c24455544492057616c6c6574205265666572656e636520496d706c656d656e746174696f6e310b3009060355040613025554301e170d3233303930313138333431375a170d3332313132373138333431365a305c311e301c06035504030c1550494420497373756572204341202d205554203031312d302b060355040a0c24455544492057616c6c6574205265666572656e636520496d706c656d656e746174696f6e310b30090603550406130255543076301006072a8648ce3d020106052b8104002203620004160e5285fb31a7947f505204292dcbdbb7709c58678d28148766ed28e4049df6f7768c9ea8c02f06d50c942961b05dee79f2a29c2c34f0d077d6bc02f9db63e97fcb1379f60bd8d138850df0fae794b4b942ce11b38654e4e220ceda1a3bc1bda38201243082012030120603551d130101ff040830060101ff020100301f0603551d23041830168014b36cb891171cd7a41a66318742e18bc040cc951b30160603551d250101ff040c300a06082b8102020000010730430603551d1f043c303a3038a036a034863268747470733a2f2f70726570726f642e706b692e65756469772e6465762f63726c2f7069645f43415f55545f30312e63726c301d0603551d0e04160414b36cb891171cd7a41a66318742e18bc040cc951b300e0603551d0f0101ff040403020106305d0603551d1204563054865268747470733a2f2f6769746875622e636f6d2f65752d6469676974616c2d6964656e746974792d77616c6c65742f6172636869746563747572652d616e642d7265666572656e63652d6672616d65776f726b300a06082a8648ce3d04030303680030650230697500de3fbec65fed743efab571160a291f33509a473e2fcc10bb352d3009d22d2a2cfa1d9795f043ed3429ec7caa4d023100aab75e2839ebe4ac1ff0103bb404de871365395e079dcd745ced5750bb62802c1be3d46992a952d87ba5f83a6a39b52c"
+	EudiEUCAHex = "3082031c308202a3a00302010202140acee8fb5e49a56b57365f5d4312c8a3ef32fb35300a06082a8648ce3d040303305c311e301c06035504030c1550494420497373756572204341202d204555203031312d302b060355040a0c24455544492057616c6c6574205265666572656e636520496d706c656d656e746174696f6e310b3009060355040613024555301e170d3233303930313138333534315a170d3332313132373138333534305a305c311e301c06035504030c1550494420497373756572204341202d204555203031312d302b060355040a0c24455544492057616c6c6574205265666572656e636520496d706c656d656e746174696f6e310b30090603550406130245553076301006072a8648ce3d020106052b8104002203620004d661b476c8d8d5f2401299cac6171da3f87267868f25646e11acde06d9b23f8bc491e60d2b692366a33e3fae447dce1255b369504a26bcdd391cdc79e599839b45873901fb4528434813c65c654ff3af0b0137a20c6b3ae7c4f0603da02e7200a38201243082012030120603551d130101ff040830060101ff020100301f0603551d23041830168014418b6176e18c81dc3fb25f563ffe6cb20681e01130160603551d250101ff040c300a06082b8102020000010730430603551d1f043c303a3038a036a034863268747470733a2f2f70726570726f642e706b692e65756469772e6465762f63726c2f7069645f43415f45555f30312e63726c301d0603551d0e04160414418b6176e18c81dc3fb25f563ffe6cb20681e011300e0603551d0f0101ff040403020106305d0603551d1204563054865268747470733a2f2f6769746875622e636f6d2f65752d6469676974616c2d6964656e746974792d77616c6c65742f6172636869746563747572652d616e642d7265666572656e63652d6672616d65776f726b300a06082a8648ce3d0403030367003064023061de24ed110fbd66fdb3b1aae7e30972a8c7019f8feaf28ffde643a207cc6735a5be13f537e5e6f24a50bf22d65c16f5023074fd973e9a7df4d0f54f6034c269446eee80de23dd96b618d2a130f08a73f2a0ca8ee1c6401b70e307964217fb65950e"
+	VcsDevCAHex = "308201bc30820163a00302010202143aff323b35be7439d7d07b9e355f3121fbad14c6300a06082a8648ce3d040302302f310b30090603550406130249543120301e06035504030c1756435320446576656c6f706d656e7420526f6f74204341301e170d3235303430313132353431385a170d3435303332373132353431385a302f310b30090603550406130249543120301e06035504030c1756435320446576656c6f706d656e7420526f6f742043413059301306072a8648ce3d020106082a8648ce3d03010703420004e86075b3fd0dae2ef85e455d47294fa23d3d2accc44a0d049a4ce6e6d8a4644f346a0e53a516a462438f48429ad82bdb1a140b7401f487229cc818cad48a87d4a35d305b300e0603551d0f0101ff04040302010630120603551d130101ff040830060101ff02010030160603551d250101ff040c300a06082b81020200000107301d0603551d0e04160414e373bca7095d0473e90131c32376d6b40ab1175d300a06082a8648ce3d04030203470030440220625d3400697db36f6c77e1971ac88e50eedb47f08db01c4dab68978bbb37cc2602203214da878149b51fcb2d182546a3951efec0bed62df303a92df393eb6aa9eddc"
 
 	ReaderRootHex = "3082019030820137a003020102021430d747795405d564b7ac48be6f364ae2c774f2fc300a06082a8648ce3d0" +
 		"4030230163114301206035504030c0b72656164657220726f6f74301e170d3230313030313030303030305a17" +
@@ -310,6 +318,8 @@ const (
 
 	DeviceAuthenticationHex = "a1696465766963654d61638443a10105a0f65820e99521a85ad7891b806a07f8b5388a332d92c189a7bf293ee1" +
 		"f543405ae6824d"
+
+	EudiPIDMDocVP_B64 = "o2d2ZXJzaW9uYzEuMGlkb2N1bWVudHOBo2dkb2NUeXBld2V1LmV1cm9wYS5lYy5ldWRpLnBpZC4xbGlzc3VlclNpZ25lZKJqbmFtZVNwYWNlc6F3ZXUuZXVyb3BhLmVjLmV1ZGkucGlkLjGC2BhYZKRmcmFuZG9tWCCDJKl_QNWV_AQl5c9QNT4vLall-oVzAYwEztVxsaJDWGhkaWdlc3RJRAVsZWxlbWVudFZhbHVlZHRlc3RxZWxlbWVudElkZW50aWZpZXJrZmFtaWx5X25hbWXYGFhkpGZyYW5kb21YIIMkqX9A1ZX8BCXlz1A1Pi8tqWX6hXMBjATO1XGxokNYaGRpZ2VzdElEBWxlbGVtZW50VmFsdWVkdGVzdHFlbGVtZW50SWRlbnRpZmllcmtmYW1pbHlfbmFtZWppc3N1ZXJBdXRohEOhASahGCFZAwQwggMAMIIChqADAgECAhQZrMreC6enYCRXOjzbiQEbiFX7WDAKBggqhkjOPQQDAjBcMR4wHAYDVQQDDBVQSUQgSXNzdWVyIENBIC0gVVQgMDExLTArBgNVBAoMJEVVREkgV2FsbGV0IFJlZmVyZW5jZSBJbXBsZW1lbnRhdGlvbjELMAkGA1UEBhMCVVQwHhcNMjUwMTE0MTI1NzIzWhcNMjYwNDA5MTI1NzIyWjBTMRUwEwYDVQQDDAxQSUQgRFMgLSAwMDMxLTArBgNVBAoMJEVVREkgV2FsbGV0IFJlZmVyZW5jZSBJbXBsZW1lbnRhdGlvbjELMAkGA1UEBhMCVVQwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQDLnZnh2hDowJ0C4bVT18UV8q-WGYZua1JVd0XsE3K-S2ZBtyHnyFk58i0fyPb3BxTc4Z_ec0SjUUbyjW86itro4IBLTCCASkwHwYDVR0jBBgwFoAUs2y4kRcc16QaZjGHQuGLwEDMlRswGwYDVR0RBBQwEoIQaXNzdWVyLmV1ZGl3LmRldjAWBgNVHSUBAf8EDDAKBggrgQICAAABAjBDBgNVHR8EPDA6MDigNqA0hjJodHRwczovL3ByZXByb2QucGtpLmV1ZGl3LmRldi9jcmwvcGlkX0NBX1VUXzAxLmNybDAdBgNVHQ4EFgQUftAgZBJsuCoNLw92rlS78jJff4gwDgYDVR0PAQH_BAQDAgeAMF0GA1UdEgRWMFSGUmh0dHBzOi8vZ2l0aHViLmNvbS9ldS1kaWdpdGFsLWlkZW50aXR5LXdhbGxldC9hcmNoaXRlY3R1cmUtYW5kLXJlZmVyZW5jZS1mcmFtZXdvcmswCgYIKoZIzj0EAwIDaAAwZQIwWHgT5JuiDEUPNqVC3e1VZaRyrHqFwiZRDpRXAt4FY9GgqCnIKfIan7IscNasa-g5AjEA7XnkAf5PcyDXg5zpCdzoe3qj5i4g3zq-g7oaTByiceytwFKPlPAlyo0Hmq1_sjX3WQNp2BhZA2SnZnN0YXR1c6Jrc3RhdHVzX2xpc3SiY2lkeBhXY3VyaXhqaHR0cHM6Ly9pc3N1ZXIuZXVkaXcuZGV2L3Rva2VuX3N0YXR1c19saXN0L0ZDL2V1LmV1cm9wYS5lYy5ldWRpLnBpZC4xLzBkODMyMDk0LTkwNDktNDljOC1hYjJmLTAyMTgxMzA5NGFhZG9pZGVudGlmaWVyX2xpc3SiYmlkYjg3Y3VyaXhoaHR0cHM6Ly9pc3N1ZXIuZXVkaXcuZGV2L2lkZW50aWZpZXJfbGlzdC9GQy9ldS5ldXJvcGEuZWMuZXVkaS5waWQuMS8wZDgzMjA5NC05MDQ5LTQ5YzgtYWIyZi0wMjE4MTMwOTRhYWRnZG9jVHlwZXdldS5ldXJvcGEuZWMuZXVkaS5waWQuMWd2ZXJzaW9uYzEuMGx2YWxpZGl0eUluZm-jZnNpZ25lZMB0MjAyNS0wMi0wN1QxNjo0NzoxOVppdmFsaWRGcm9twHQyMDI1LTAyLTA3VDE2OjQ3OjE5Wmp2YWxpZFVudGlswHQyMDI1LTA1LTA4VDAwOjAwOjAwWmx2YWx1ZURpZ2VzdHOhd2V1LmV1cm9wYS5lYy5ldWRpLnBpZC4xqABYIIt0Gbcn145Ss8IcQKwebZ2yCKyjdX_9s1WXiAHp2SF_AVggudHgKXQKXxiI9wKfTlDto8wFftL7FJ5k9QA7UX7jBjMCWCD_SF6OgglaspJLQrcmtYuSRO3A7Gd7DFYwD5lzxKGYWANYIHUN0rRwGQ6vLAUc3M02sfWQoNUxqezu3a3YQhjkknqDBFggka0vOct72cucUtnWlg6CmPv7JFYBrw5XQy8A1rfqm9kFWCDV5z7dXoXCA-xCfJLR44gNq1BC4lG1_5akgTnkUnuRTgZYIMg5rhqiheRHpJjgMHNh_OzUnEhRCnWOPJ_zqoLN2N11B1gg4UZJnBfzXZAY-8UHhtE-lrBtiij57cn-29uRVBLU9rltZGV2aWNlS2V5SW5mb6FpZGV2aWNlS2V5pAECIAEhWCDJ8-FGQLZ4e5Ypk8IfXuFXRP-zMOx34-AdDXpbBWxnOSJYIEiUMeVFcGNsQltqUzTeibQb6V9BVP8c0c-yb_xQ-PBAb2RpZ2VzdEFsZ29yaXRobWdTSEEtMjU2WECJYOYk_1mNZvjQokZR_SEphdtOj2hdu9duYKeDUPbTs--pKPd0pO6TK8m5ufQ-ZRpLv28r2vqpIFEaeQ13gNuabGRldmljZVNpZ25lZKJqbmFtZVNwYWNlc9gYQaBqZGV2aWNlQXV0aKFvZGV2aWNlU2lnbmF0dXJlhEOhASag9lhA_SAIWvaIJbEKPiyxDGl9p7NO4dWDH1WVFBYnhYc-zLRrFUOqnZoUieHWonLQ8vEsYL2t5VJruF9Nm54b9_NFnWZzdGF0dXMA"
 )
 
 func spec_ReaderRoot(t *testing.T) *x509.Certificate {
@@ -631,6 +641,42 @@ func TestSpec_SessionTranscript_RoundTrip(t *testing.T) {
 	expectCBOR(t, sessionTranscriptTagged, sessionTranscriptTaggedAgain.TaggedValue)
 }
 
+func Test_Verify_Eudi_PID_MDoc(t *testing.T) {
+	deviceResponseBytes := decodeB64Url(t, EudiPIDMDocVP_B64)
+
+	var deviceResponse DeviceResponse
+	if err := cbor.Unmarshal(deviceResponseBytes, &deviceResponse); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, document := range deviceResponse.Documents {
+		_, err := document.IssuerSigned.NameSpaces.Claims()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		_, err = document.IssuerSigned.IssuerAuth.MobileSecurityObject()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		_, err = document.DeviceSigned.NameSpaces()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cacertDER := decodeHex(t, EudiUTCAHex)
+		cacert, err := x509.ParseCertificate(cacertDER)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = document.IssuerSigned.IssuerAuth.Verify([]*x509.Certificate{cacert}, time.Now())
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func Test_Issue_Eudi_PID_MDoc(t *testing.T) {
 	data := map[string]map[string]interface{}{
 		"eu.europa.ec.eudi.pid.1": {
@@ -688,6 +734,11 @@ func Test_Issue_Eudi_PID_MDoc(t *testing.T) {
 
 	output := buf.String()
 	fmt.Printf("mdoc: %s", output)
+
+	err = verifyMSO(doc.IssuerSigned.IssuerAuth)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func signMSO(mso *MobileSecurityObject) (*cose.UntaggedSign1Message, error) {
@@ -701,9 +752,19 @@ func signMSO(mso *MobileSecurityObject) (*cose.UntaggedSign1Message, error) {
 		return nil, err
 	}
 
-	signer, err := cose.NewSigner(cose.AlgorithmES256, key)
+	//signer, err := cose.NewSigner(cose.AlgorithmES256, key)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	tinkSigner, err := subtle.NewECDSASignerFromPrivateKey("SHA256", "IEEE_P1363", key)
 	if err != nil {
 		return nil, err
+	}
+
+	signer := &TinkCoseSigner{
+		alg:    cose.AlgorithmES256,
+		signer: tinkSigner,
 	}
 
 	headers := cose.Headers{
@@ -755,11 +816,47 @@ func signMSO(mso *MobileSecurityObject) (*cose.UntaggedSign1Message, error) {
 	return issuerAuth, nil
 }
 
+func verifyMSO(auth IssuerAuth) error {
+	caCertBytes, err := hex.DecodeString(VcsDevCAHex)
+	if err != nil {
+		return err
+	}
+	caCert, err := x509.ParseCertificate(caCertBytes)
+	if err != nil {
+		return err
+	}
+
+	return auth.Verify([]*x509.Certificate{caCert}, time.Now())
+
+}
+
 func createX509Cert(key *ecdsa.PrivateKey) (*x509.Certificate, error) {
 	//key, err := rsa.GenerateKey(rand.Reader, 4096)
 	//if err != nil {
 	//	return err
 	//}
+
+	caCertBytes, err := hex.DecodeString(VcsDevCAHex)
+	if err != nil {
+		return nil, err
+	}
+
+	caKeyBytes, err := hex.DecodeString("307702010104206933d74839c7bd682126241d0838caa9a88ea2effb93e0093f2f47baaba48004a00a06082a8648ce3d030107a14403420004e86075b3fd0dae2ef85e455d47294fa23d3d2accc44a0d049a4ce6e6d8a4644f346a0e53a516a462438f48429ad82bdb1a140b7401f487229cc818cad48a87d4")
+	if err != nil {
+		return nil, err
+	}
+
+	caCert, err := x509.ParseCertificate(caCertBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	var caKey interface{}
+	caKey, err = x509.ParseECPrivateKey(caKeyBytes)
+
+	if err != nil {
+		return nil, err
+	}
 
 	template := &x509.Certificate{
 		SerialNumber: big.NewInt(2019),
@@ -771,18 +868,38 @@ func createX509Cert(key *ecdsa.PrivateKey) (*x509.Certificate, error) {
 			StreetAddress: []string{"viale Europa"},
 			PostalCode:    []string{"00144"},
 		},
-		NotBefore:             time.Now(),
-		NotAfter:              time.Now().AddDate(10, 0, 0),
-		IsCA:                  false,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
+		DNSNames: []string{
+			"www.posteitaliane.it",
+		},
+		NotBefore: time.Now(),
+		NotAfter:  time.Now().AddDate(0, 0, 450),
+		IsCA:      false,
+		UnknownExtKeyUsage: []asn1.ObjectIdentifier{
+			{1, 3, 130, 2, 0, 0, 1, 2}, // EUDI Wallet
+		},
+		//ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
+		KeyUsage:              x509.KeyUsageDigitalSignature,
 		BasicConstraintsValid: true,
 	}
 
-	der, err := x509.CreateCertificate(rand.Reader, template, template, &key.PublicKey, key)
+	der, err := x509.CreateCertificate(rand.Reader, template, caCert, &key.PublicKey, caKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return x509.ParseCertificate(der)
+}
+
+type TinkCoseSigner struct {
+	alg    cose.Algorithm
+	signer tink.Signer
+}
+
+// Algorithm returns the signing algorithm associated with the private key.
+func (t *TinkCoseSigner) Algorithm() cose.Algorithm {
+	return t.alg
+}
+
+func (t *TinkCoseSigner) Sign(_ io.Reader, content []byte) ([]byte, error) {
+	return t.signer.Sign(content)
 }

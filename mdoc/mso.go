@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"github.com/dellekappa/vc-go/cwt"
 	cwt2 "github.com/dellekappa/vc-go/verifiable/cwt"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/veraison/go-cose"
 	"time"
 )
@@ -84,14 +85,10 @@ func digestValues(namespaces Claims, hash crypto.Hash) (ValueDigests, error) {
 		for i := range values {
 			v := values[i]
 
-			vCbor, err := encodeModeTaggedEncodedCBOR.Marshal(v)
+			hashed, err := digestValue(v, hash)
 			if err != nil {
 				return nil, err
 			}
-
-			digester := hash.New()
-			digester.Write(vCbor)
-			hashed := digester.Sum(nil)
 
 			digestIDs[DigestID(v.DigestID)] = hashed
 		}
@@ -100,14 +97,31 @@ func digestValues(namespaces Claims, hash crypto.Hash) (ValueDigests, error) {
 	return digests, nil
 }
 
+func digestValue(v Claim, hash crypto.Hash) ([]byte, error) {
+	untaggedCbor, err := cbor.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+
+	taggedCbor, err := NewTaggedEncodedCBOR(untaggedCbor)
+	if err != nil {
+		return nil, err
+	}
+
+	digester := hash.New()
+	digester.Write(taggedCbor.TaggedValue)
+	hashed := digester.Sum(nil)
+	return hashed, nil
+}
+
 func SignMobileSecurityObject(mso *MobileSecurityObject, signatureAlg cose.Algorithm, signer cwt.ProofCreator, certs []*x509.Certificate) (*cose.UntaggedSign1Message, error) {
 
 	headers := cose.Headers{
-		Protected: cose.ProtectedHeader{
-			cose.HeaderLabelAlgorithm: cose.AlgorithmES256,
-		},
-		Unprotected: make(cose.UnprotectedHeader),
+		Protected:   cose.ProtectedHeader{},
+		Unprotected: cose.UnprotectedHeader{},
 	}
+
+	headers.Protected.SetAlgorithm(signatureAlg)
 
 	err := setX509Chain(headers.Unprotected, certs)
 	if err != nil {
@@ -158,3 +172,43 @@ func SignMobileSecurityObject(mso *MobileSecurityObject, signatureAlg cose.Algor
 
 	return msg, nil
 }
+
+//func VerifyMobileSecurityObject(message *cose.UntaggedSign1Message, verifier cwt.ProofChecker) error {
+//
+//	var msg []byte
+//	var signature []byte
+//
+//	algo, err := message.Headers.Protected.Algorithm()
+//	if err != nil {
+//		return err
+//	}
+//
+//	x509Chain, err := getX509Chain(message.Headers.Unprotected)
+//	if err != nil {
+//		return err
+//	}
+//
+//	// currently supported only COSE_Key, x5chain is not supported by go opensource implementation yet
+//	//keyMaterial, _ := message.Headers.Protected[proof.COSEKeyHeader].(string)   // nolint
+//	//keyIDBinary, _ := message.Headers.Protected[cose.HeaderLabelKeyID].([]byte) // nolint
+//	//
+//	//var rawKeyID string
+//	//if len(keyIDBinary) > 0 {
+//	//	rawKeyID = string(keyIDBinary)
+//	//}
+//
+//	//var expectedProofIssuer string
+//	//if v.expectedProofIssuer != nil {
+//	//	expectedProofIssuer = *v.expectedProofIssuer
+//	//}
+//	//
+//	//if expectedProofIssuer == "" && rawKeyID != "" {
+//	//	expectedProofIssuer = strings.Split(rawKeyID, "#")[0]
+//	//}
+//
+//	return verifier.CheckCWTProof(checker.CheckCWTProofRequest{
+//		KeyMaterial: keyMaterial,
+//		KeyID:       rawKeyID,
+//		Algo:        algo,
+//	}, expectedProofIssuer, msg, signature)
+//}

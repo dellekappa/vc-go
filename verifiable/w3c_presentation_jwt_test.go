@@ -25,7 +25,7 @@ func TestNewJWTPresClaims(t *testing.T) {
 
 		// issuer, ID and audience are filled in JWT claims
 		require.Equal(t, vp.Holder, claims.Issuer)
-		require.Equal(t, vp.ID, claims.ID)
+		require.Equal(t, vp.id, claims.ID)
 		require.Equal(t, audience[0], claims.Audience[0])
 
 		require.NotNil(t, claims.Presentation)
@@ -35,7 +35,7 @@ func TestNewJWTPresClaims(t *testing.T) {
 		require.Empty(t, claims.Presentation[vpFldHolder])
 
 		// minimization does not affect original VP
-		require.NotEqual(t, vp.ID, claims.Presentation[vpFldID])
+		require.NotEqual(t, vp.id, claims.Presentation[vpFldID])
 		require.NotEqual(t, vp.Holder, claims.Presentation[vpFldHolder])
 	})
 
@@ -46,13 +46,13 @@ func TestNewJWTPresClaims(t *testing.T) {
 
 		// issuer, ID and audience are filled in JWT claims
 		require.Equal(t, vp.Holder, claims.Issuer)
-		require.Equal(t, vp.ID, claims.ID)
+		require.Equal(t, vp.id, claims.ID)
 		require.Equal(t, audience[0], claims.Audience[0])
 
 		require.NotNil(t, claims.Presentation)
 
 		// ID and Holder are cleared (minimized) in "vp" claim
-		require.Equal(t, vp.ID, claims.Presentation[vpFldID])
+		require.Equal(t, vp.id, claims.Presentation[vpFldID])
 		require.Equal(t, vp.Holder, claims.Presentation[vpFldHolder])
 	})
 }

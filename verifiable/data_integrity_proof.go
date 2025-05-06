@@ -47,8 +47,8 @@ func (vc *Credential) AddDataIntegrityProof(context *DataIntegrityProofContext, 
 	return nil
 }
 
-// AddDataIntegrityProof adds a Data Integrity Proof to the Presentation.
-func (vp *Presentation) AddDataIntegrityProof(context *DataIntegrityProofContext, signer *dataintegrity.Signer) error {
+// AddDataIntegrityProof adds a Data Integrity Proof to the W3CPresentation.
+func (vp *W3CPresentation) AddDataIntegrityProof(context *DataIntegrityProofContext, signer *dataintegrity.Signer) error {
 	vpBytes, err := vp.MarshalJSON()
 	if err != nil {
 		return fmt.Errorf("add data integrity proof to VP: %w", err)

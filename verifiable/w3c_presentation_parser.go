@@ -26,16 +26,16 @@ type parsePresentationResponse struct {
 	VPCwt         *VpCWT
 }
 
-// PresentationParser is an interface for parsing presentations.
-type PresentationParser interface {
+// W3CPresentationParser is an interface for parsing presentations.
+type W3CPresentationParser interface {
 	parse(vpData []byte, vpOpts *presentationOpts) (*parsePresentationResponse, error)
 }
 
-// PresentationJSONParser is a parser for JSON presentations.
-type PresentationJSONParser struct {
+// W3CPresentationJSONParser is a parser for JSON presentations.
+type W3CPresentationJSONParser struct {
 }
 
-func (p *PresentationJSONParser) parse(vpData []byte, vpOpts *presentationOpts) (*parsePresentationResponse, error) {
+func (p *W3CPresentationJSONParser) parse(vpData []byte, vpOpts *presentationOpts) (*parsePresentationResponse, error) {
 	vpStr := string(unQuote(vpData))
 
 	if jwt.IsJWS(vpStr) {
@@ -50,7 +50,7 @@ func (p *PresentationJSONParser) parse(vpData []byte, vpOpts *presentationOpts) 
 
 		vcDataFromJwt, rawCred, err := decodeVPFromJWS(vpStr, proofChecker)
 		if err != nil {
-			return nil, fmt.Errorf("decoding of Verifiable Presentation from JWS: %w", err)
+			return nil, fmt.Errorf("decoding of Verifiable W3CPresentation from JWS: %w", err)
 		}
 
 		return &parsePresentationResponse{
@@ -70,7 +70,7 @@ func (p *PresentationJSONParser) parse(vpData []byte, vpOpts *presentationOpts) 
 	if jwt.IsJWTUnsecured(vpStr) {
 		rawBytes, rawPres, err := decodeVPFromUnsecuredJWT(vpStr)
 		if err != nil {
-			return nil, fmt.Errorf("decoding of Verifiable Presentation from unsecured JWT: %w", err)
+			return nil, fmt.Errorf("decoding of Verifiable W3CPresentation from unsecured JWT: %w", err)
 		}
 
 		if err := checkEmbeddedProofBytes(rawBytes, nil, embeddedProofCheckOpts); err != nil {
@@ -112,11 +112,11 @@ type VpCWT struct {
 	VPMap   map[string]interface{}
 }
 
-// PresentationCWTParser is a parser for CWT presentations.
-type PresentationCWTParser struct {
+// W3CPresentationCWTParser is a parser for CWT presentations.
+type W3CPresentationCWTParser struct {
 }
 
-func (p *PresentationCWTParser) parse(vpData []byte, _ *presentationOpts) (*parsePresentationResponse, error) {
+func (p *W3CPresentationCWTParser) parse(vpData []byte, _ *presentationOpts) (*parsePresentationResponse, error) {
 	var rawErr error
 	var hexRawErr error
 	var hexErr error
@@ -162,7 +162,7 @@ func (p *PresentationCWTParser) parse(vpData []byte, _ *presentationOpts) (*pars
 	}, nil
 }
 
-func (p *PresentationCWTParser) parsePres(data []byte) (*cose.Sign1Message, error) {
+func (p *W3CPresentationCWTParser) parsePres(data []byte) (*cose.Sign1Message, error) {
 	var message cose.Sign1Message
 
 	if err := cbor.Unmarshal(data, &message); err != nil {
@@ -172,11 +172,11 @@ func (p *PresentationCWTParser) parsePres(data []byte) (*cose.Sign1Message, erro
 	return &message, nil
 }
 
-// presentationEnvelopedParser is a parser for presentations of type, EnvelopedVerifiablePresentation.
-type presentationEnvelopedParser struct {
+// w3cPresentationEnvelopedParser is a parser for presentations of type, EnvelopedVerifiablePresentation.
+type w3cPresentationEnvelopedParser struct {
 }
 
-func (p *presentationEnvelopedParser) parse(vpData []byte, vpOpts *presentationOpts) (*parsePresentationResponse, error) {
+func (p *w3cPresentationEnvelopedParser) parse(vpData []byte, vpOpts *presentationOpts) (*parsePresentationResponse, error) {
 	vpEnveloped := &Envelope{}
 	if err := json.Unmarshal(vpData, vpEnveloped); err != nil {
 		return nil, fmt.Errorf("unmarshal envelopedCredential: %w", err)
@@ -193,10 +193,10 @@ func (p *presentationEnvelopedParser) parse(vpData []byte, vpOpts *presentationO
 
 	switch mediaType {
 	case VPMediaTypeJWT:
-		parser := &PresentationJSONParser{}
+		parser := &W3CPresentationJSONParser{}
 		return parser.parse([]byte(data), vpOpts)
 	case VPMediaTypeCOSE:
-		parser := &PresentationCWTParser{}
+		parser := &W3CPresentationCWTParser{}
 		return parser.parse([]byte(data), vpOpts)
 	default:
 		return nil, fmt.Errorf("unsupported media type for enveloped presentation: %s", mediaType)

@@ -13,7 +13,7 @@ require (
 	github.com/btcsuite/btcd/btcec/v2 v2.1.3
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
 	github.com/dellekappa/did-go v0.0.0-20241126122450-59cb7046634c
-	github.com/dellekappa/kcms-go v0.0.0-20241126111333-26c606ba9178
+	github.com/dellekappa/kcms-go v0.0.0-20250506135829-7b04af133dd9
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/go-jose/go-jose/v3 v3.0.3
 	github.com/golang/mock v1.4.4

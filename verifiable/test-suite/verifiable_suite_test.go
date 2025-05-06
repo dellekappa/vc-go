@@ -141,7 +141,7 @@ func encodeVCToJWS(vcBytes []byte, privateKey *rsa.PrivateKey) {
 }
 
 func encodeVPToJWS(vpBytes []byte, audience string, privateKey *rsa.PrivateKey, publicKey *rsa.PublicKey) {
-	vp, err := verifiable.ParsePresentation(vpBytes,
+	vp, err := verifiable.ParseW3CPresentation(vpBytes,
 		// do not test the cryptographic proofs (see https://github.com/w3c/vc-test-suite/issues/101)
 		verifiable.WithPresNoProofCheck(),
 		// the public key is used to decode verifiable credentials passed as JWS to the presentation
@@ -277,7 +277,7 @@ func encodeVCToJSON(vcBytes []byte, testFileName string) {
 func encodeVPToJSON(vcBytes []byte) {
 	// https://www.w3.org/TR/vc-data-model/#presentations-0 states "If present" under verifiableCredential
 	// but the test suite requires the element to be present. Hence, WithPresRequireVC is used in test suite runs.
-	vp, err := verifiable.ParsePresentation(vcBytes,
+	vp, err := verifiable.ParseW3CPresentation(vcBytes,
 		verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(loader))
 	if err != nil {

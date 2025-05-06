@@ -12,7 +12,7 @@ import (
 	"github.com/dellekappa/vc-go/jwt"
 )
 
-// JWTPresClaims is JWT Claims extension by Verifiable Presentation (with custom "vp" claim).
+// JWTPresClaims is JWT Claims extension by Verifiable W3CPresentation (with custom "vp" claim).
 type JWTPresClaims struct {
 	*jwt.Claims
 
@@ -32,11 +32,11 @@ func (jpc *JWTPresClaims) refineFromJWTClaims() {
 }
 
 // newJWTPresClaims creates JWT Claims of VP with an option to minimize certain fields put into "vp" claim.
-func newJWTPresClaims(vp *Presentation, audience []string, minimizeVP bool) (*JWTPresClaims, error) {
+func newJWTPresClaims(vp *W3CPresentation, audience []string, minimizeVP bool) (*JWTPresClaims, error) {
 	// currently jwt encoding supports only single subject.([]Subject) (by the spec)
 	jwtClaims := &jwt.Claims{
 		Issuer: vp.Holder, // iss
-		ID:     vp.ID,     // jti
+		ID:     vp.id,     // jti
 	}
 	if len(audience) > 0 {
 		jwtClaims.Audience = audience
@@ -49,7 +49,7 @@ func newJWTPresClaims(vp *Presentation, audience []string, minimizeVP bool) (*JW
 
 	if minimizeVP {
 		vpCopy := *vp
-		vpCopy.ID = ""
+		vpCopy.id = ""
 		vpCopy.Holder = ""
 		rawVP, err = vpCopy.raw()
 	} else {
@@ -68,15 +68,15 @@ func newJWTPresClaims(vp *Presentation, audience []string, minimizeVP bool) (*JW
 	return presClaims, nil
 }
 
-// JWTPresClaimsUnmarshaller parses JWT of certain type to JWT Claims containing "vp" (Presentation) claim.
+// JWTPresClaimsUnmarshaller parses JWT of certain type to JWT Claims containing "vp" (W3CPresentation) claim.
 type JWTPresClaimsUnmarshaller func(vpJWT string) (*JWTPresClaims, error)
 
 // decodePresJWT parses JWT from the specified bytes array in compact format using the unmarshaller.
-// It returns decoded Verifiable Presentation refined by JWT Claims in raw byte array and rawPresentation form.
+// It returns decoded Verifiable W3CPresentation refined by JWT Claims in raw byte array and rawPresentation form.
 func decodePresJWT(vpJWT string, unmarshaller JWTPresClaimsUnmarshaller) ([]byte, rawPresentation, error) {
 	presClaims, err := unmarshaller(vpJWT)
 	if err != nil {
-		return nil, nil, fmt.Errorf("decode Verifiable Presentation JWT claims: %w", err)
+		return nil, nil, fmt.Errorf("decode Verifiable W3CPresentation JWT claims: %w", err)
 	}
 
 	// Apply VC-related claims from JWT.
@@ -93,13 +93,13 @@ func decodePresJWT(vpJWT string, unmarshaller JWTPresClaimsUnmarshaller) ([]byte
 }
 
 // CreateJWTVP creates a JWT presentation from the given presentation.
-func (vp *Presentation) CreateJWTVP(
+func (vp *W3CPresentation) CreateJWTVP(
 	aud []string,
 	signatureAlg JWSAlgorithm,
 	signer jwt.ProofCreator,
 	keyID string,
 	minimizeVP bool,
-) (*Presentation, error) {
+) (*W3CPresentation, error) {
 	jwtClaims, err := vp.JWTClaims(aud, minimizeVP)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create JWT claims: %w", err)
@@ -117,7 +117,7 @@ func (vp *Presentation) CreateJWTVP(
 	return vp2, nil
 }
 
-// IsJWT checks whether the Presentation is a JWT.
-func (vp *Presentation) IsJWT() bool {
+// IsJWT checks whether the W3CPresentation is a JWT.
+func (vp *W3CPresentation) IsJWT() bool {
 	return vp.JWT != ""
 }

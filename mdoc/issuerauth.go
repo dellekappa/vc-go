@@ -28,6 +28,10 @@ func (ia *IssuerAuth) UnmarshalCBOR(data []byte) error {
 	return cbor.Unmarshal(data, (*cose.UntaggedSign1Message)(ia))
 }
 
+func (ia *IssuerAuth) X509Chain() ([]*x509.Certificate, error) {
+	return getX509Chain(ia.Headers.Unprotected)
+}
+
 func (ia *IssuerAuth) Verify(rootCertificates []*x509.Certificate, now time.Time) error {
 	chain, err := getX509Chain(ia.Headers.Unprotected)
 	if err != nil {
@@ -176,14 +180,19 @@ func checkDocumentSignerCertificate(certificate *x509.Certificate, previous *x50
 		return ErrInvalidDocumentSignerCertificate
 	}
 
-	if len(certificate.UnknownExtKeyUsage) != 1 {
-		return ErrInvalidDocumentSignerCertificate
-	}
-	if !certificate.UnknownExtKeyUsage[0].Equal(asn1.ObjectIdentifier{1, 0, 18013, 5, 1, 2}) {
+	if len(certificate.UnknownExtKeyUsage) < 1 {
 		return ErrInvalidDocumentSignerCertificate
 	}
 
-	return nil
+	extKeyUsage := certificate.UnknownExtKeyUsage[0]
+	if extKeyUsage.Equal(asn1.ObjectIdentifier{1, 0, 18013, 5, 1, 2}) { // ISO/IEC TS 18013
+		return nil
+	}
+	if extKeyUsage.Equal(asn1.ObjectIdentifier{1, 3, 130, 2, 0, 0, 1, 2}) { // EUDI Wallet
+		return nil
+	}
+
+	return ErrInvalidDocumentSignerCertificate
 }
 
 func (ia *IssuerAuth) MobileSecurityObjectBytes() (*TaggedEncodedCBOR, error) {

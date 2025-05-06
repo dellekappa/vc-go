@@ -5,13 +5,13 @@ Copyright Avast Software. All Rights Reserved.
 SPDX-License-Identifier: Apache-2.0
 */
 
-// Package verifiable implements Verifiable Credential and Presentation data model
+// Package verifiable implements Verifiable Credential and W3CPresentation data model
 // (https://www.w3.org/TR/vc-data-model).
 // It provides the data structures and functions which allow to process the Verifiable documents on different
 // sides and levels. For example, an Issuer can create verifiable.Credential structure and issue it to a
 // Holder in JWS form. The Holder can decode received Credential and make sure the signature is valid.
 // The Holder can present the Credential to the Verifier or combine one or more Credentials into a Verifiable
-// Presentation. The Verifier can decode and verify the received Credentials and Presentations.
+// W3CPresentation. The Verifier can decode and verify the received Credentials and Presentations.
 package verifiable
 
 import (
@@ -126,10 +126,6 @@ type jsonldCredentialOpts struct {
 
 // Proof defines embedded proof of Verifiable Credential.
 type Proof map[string]interface{}
-
-// CustomFields is a map of extra fields of struct build when unmarshalling JSON which are not
-// mapped to the struct fields.
-type CustomFields map[string]interface{}
 
 const (
 	jsonFldTypedIDID    = "id"

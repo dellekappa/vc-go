@@ -2252,7 +2252,7 @@ func TestPresentationDefinition_CreateVP_V1Credential(t *testing.T) {
 
 		checkSubmission(t, vp, pd)
 
-		ps, ok := vp.CustomFields["presentation_submission"].(*PresentationSubmission)
+		ps, ok := vp.CustomFields()["presentation_submission"].(*PresentationSubmission)
 		require.True(t, ok)
 		require.Equal(t, "jwt_vp", ps.DescriptorMap[0].Format)
 
@@ -2769,7 +2769,7 @@ func TestPresentationDefinition_Match_cwt(t *testing.T) {
 	cwtVC, err := vc.CreateSignedCOSEVC(cose.AlgorithmRS256, issuerSigner, pubKeyID)
 	require.NoError(t, err)
 
-	vp, err := verifiable.NewPresentation(
+	vp, err := verifiable.NewW3CPresentation(
 		verifiable.WithCredentials(cwtVC),
 		verifiable.WithBaseContext(verifiable.V2ContextURI),
 	)
@@ -2778,8 +2778,7 @@ func TestPresentationDefinition_Match_cwt(t *testing.T) {
 	vp.Context = append(vp.Context, "https://identity.foundation/presentation-exchange/submission/v1")
 	vp.Type = append(vp.Type, "PresentationSubmission")
 
-	vp.CustomFields = make(map[string]interface{})
-	vp.CustomFields["presentation_submission"] = toExampleMap(&PresentationSubmission{DescriptorMap: []*InputDescriptorMapping{
+	vp.CustomFields()["presentation_submission"] = toExampleMap(&PresentationSubmission{DescriptorMap: []*InputDescriptorMapping{
 		{
 			ID:   "banking",
 			Path: "$.verifiableCredential[0]", // use invalid path (missing .vp) to demonstrate the workaround
@@ -2806,14 +2805,14 @@ func TestPresentationDefinition_Match_cwt(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	receivedVP, err := verifiable.ParsePresentation(vpBytes,
+	receivedVP, err := verifiable.ParseW3CPresentation(vpBytes,
 		verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(loader),
 	)
 	require.NoError(t, err)
 
 	matched, err := verifierDefinitions.Match(
-		[]*verifiable.Presentation{receivedVP}, loader,
+		[]verifiable.Presentation{receivedVP}, loader,
 		WithCredentialOptions(
 			verifiable.WithDisabledProofCheck(),
 			verifiable.WithJSONLDDocumentLoader(loader)),
@@ -2916,10 +2915,10 @@ func newSdJwtVC(
 	return parsed
 }
 
-func checkSubmission(t *testing.T, vp *verifiable.Presentation, pd *PresentationDefinition) {
+func checkSubmission(t *testing.T, vp *verifiable.W3CPresentation, pd *PresentationDefinition) {
 	t.Helper()
 
-	ps, ok := vp.CustomFields["presentation_submission"].(*PresentationSubmission)
+	ps, ok := vp.CustomFields()["presentation_submission"].(*PresentationSubmission)
 	require.True(t, ok)
 	require.NotEmpty(t, ps.ID)
 	require.Equal(t, ps.DefinitionID, pd.ID)
@@ -2941,7 +2940,7 @@ func checkSubmission(t *testing.T, vp *verifiable.Presentation, pd *Presentation
 
 func checkExternalSubmission(
 	t *testing.T,
-	vpList []*verifiable.Presentation,
+	vpList []*verifiable.W3CPresentation,
 	ps *PresentationSubmission,
 	pd *PresentationDefinition,
 ) {
@@ -2969,7 +2968,7 @@ func checkExternalSubmission(
 	}
 }
 
-func vpToMap(t *testing.T, vp *verifiable.Presentation) map[string]interface{} {
+func vpToMap(t *testing.T, vp *verifiable.W3CPresentation) map[string]interface{} {
 	t.Helper()
 
 	var m map[string]interface{}
@@ -3009,7 +3008,7 @@ func (p *pathEvaluator) Evaluate(t *testing.T, data interface{}, descriptor *Inp
 	return val
 }
 
-func checkVP(t *testing.T, vp *verifiable.Presentation, format string) {
+func checkVP(t *testing.T, vp *verifiable.W3CPresentation, format string) {
 	t.Helper()
 
 	checkVPEx(t, vp, format, verifiable.V1ContextURI, verifiable.VPType, "")
@@ -3017,7 +3016,7 @@ func checkVP(t *testing.T, vp *verifiable.Presentation, format string) {
 
 func checkVPEx(
 	t *testing.T,
-	vp *verifiable.Presentation,
+	vp *verifiable.W3CPresentation,
 	format, expectedBaseContext, expectedType string,
 	expectedMediaType verifiable.MediaType,
 ) {
@@ -3040,7 +3039,7 @@ func checkVPEx(
 		}
 	}
 
-	_, err = verifiable.ParsePresentation(b,
+	_, err = verifiable.ParseW3CPresentation(b,
 		verifiable.WithPresDisabledProofCheck(),
 		verifiable.WithPresJSONLDDocumentLoader(createTestJSONLDDocumentLoader(t)))
 	require.NoError(t, err)

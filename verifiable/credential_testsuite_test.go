@@ -80,20 +80,20 @@ func TestWithPresRequireProof(t *testing.T) {
 }
 
 func TestNewPresentationWithEmptyFields(t *testing.T) {
-	t.Run("creates a new Verifiable Presentation from JSON with valid empty VC structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with valid empty VC structure", func(t *testing.T) {
 		vp, err := newTestPresentation([]byte(validEmptyPresentation))
 		require.NoError(t, err)
 		require.NotNil(t, vp)
 	})
 
-	t.Run("creates a new Verifiable Presentation from JSON with invalid empty VC structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with invalid empty VC structure", func(t *testing.T) {
 		vp, err := newTestPresentation([]byte(validEmptyPresentation), WithPresRequireVC())
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "verifiableCredential is required")
 		require.Nil(t, vp)
 	})
 
-	t.Run("creates a new Verifiable Presentation from JSON with invalid empty proof structure", func(t *testing.T) {
+	t.Run("creates a new Verifiable W3CPresentation from JSON with invalid empty proof structure", func(t *testing.T) {
 		vp, err := newTestPresentation([]byte(validEmptyPresentation), WithPresRequireProof())
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "embedded proof is missing")
