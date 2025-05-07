@@ -58,10 +58,16 @@ func newMDocCredClaims(vc *Credential, hashAlg crypto.Hash) (*MDocCredClaims, er
 
 	deviceKey := mdoc.DeviceKey(*holderKey)
 
+	now := time.Now().UTC()
+	validFrom := vcc.Issued.Time
+	if now.After(validFrom) {
+		validFrom = now
+	}
+
 	mso, claims, err := mdoc.NewMobileSecurityObject(data,
 		mdoc.ValidityInfo{
-			Signed:     time.Now().UTC(),
-			ValidFrom:  vcc.Issued.Time.UTC(),
+			Signed:     now,
+			ValidFrom:  validFrom,
 			ValidUntil: vcc.Expired.Time.UTC(),
 		},
 		mdoc.DeviceKeyInfo{
