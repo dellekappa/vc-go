@@ -12,7 +12,7 @@ require (
 	github.com/VictoriaMetrics/fastcache v1.5.7
 	github.com/btcsuite/btcd/btcec/v2 v2.1.3
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
-	github.com/dellekappa/did-go v0.0.0-20241126122450-59cb7046634c
+	github.com/dellekappa/did-go v0.0.0-20250613093525-be1a569d1cdc
 	github.com/dellekappa/kcms-go v0.0.0-20250506135829-7b04af133dd9
 	github.com/fxamacker/cbor/v2 v2.7.0
 	github.com/go-jose/go-jose/v3 v3.0.3
@@ -24,9 +24,10 @@ require (
 	github.com/multiformats/go-multibase v0.1.1
 	github.com/piprate/json-gold v0.5.1-0.20230111113000-6ddbe6e6f19f
 	github.com/samber/lo v1.47.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/tidwall/gjson v1.14.3
 	github.com/tidwall/sjson v1.1.4
+	github.com/tink-crypto/tink-go/v2 v2.2.0
 	github.com/trustbloc/bbs-signature-go v1.0.2
 	github.com/veraison/go-cose v1.3.0
 	github.com/xeipuuv/gojsonschema v1.2.0
@@ -57,7 +58,6 @@ require (
 	github.com/teserakt-io/golang-ed25519 v0.0.0-20210104091850-3888c087a4c8 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/tink-crypto/tink-go/v2 v2.2.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect

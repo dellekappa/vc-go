@@ -39,7 +39,7 @@ func TestJoseVerifier(t *testing.T) {
 		verifier := &joseVerifier{proofChecker: mock}
 
 		err := verifier.Verify(jose.Headers{}, nil, nil, nil)
-		require.ErrorContains(t, err, "missed kid in jwt header")
+		require.ErrorContains(t, err, "missed kid or jwk in jwt header")
 	})
 }
 

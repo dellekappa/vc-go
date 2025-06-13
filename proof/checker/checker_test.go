@@ -71,13 +71,13 @@ func TestProofChecker_CheckJWTProof(t *testing.T) {
 		checker.WithJWTAlg(eddsa.New()))
 
 	err := testable.CheckJWTProof(jose.Headers{jose.HeaderAlgorithm: "talg"}, "issuerID", nil, nil)
-	require.ErrorContains(t, err, "missed kid in jwt header")
+	require.ErrorContains(t, err, "missed kid or jwk in jwt header")
 
 	err = testable.CheckJWTProof(jose.Headers{jose.HeaderKeyID: "tid"}, "issuerID", nil, nil)
 	require.ErrorContains(t, err, "missed alg in jwt header")
 
 	err = testable.CheckJWTProof(jose.Headers{
-		jose.HeaderKeyID: "tid", jose.HeaderAlgorithm: "talg"}, "issuerID", nil, nil)
+		jose.HeaderKeyID: "tid", jose.HeaderAlgorithm: "EdDSA"}, "issuerID", nil, nil)
 	require.ErrorContains(t, err, "invalid public key id")
 
 	err = testable.CheckJWTProof(jose.Headers{
